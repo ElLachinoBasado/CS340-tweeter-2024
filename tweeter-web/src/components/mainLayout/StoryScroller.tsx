@@ -19,7 +19,7 @@ const StoryScroller = () => {
   const addItems = (newItems: Status[]) =>
     setNewItems(newItems);
 
-  const { displayedUser, setDisplayedUser, currentUser, authToken } =
+  const { displayedUser, authToken } =
     useContext(UserInfoContext);
 
   // Initialize the component whenever the displayed user changes
