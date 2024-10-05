@@ -6,7 +6,7 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";
 import { AuthenticationFields } from "../AuthenticationFields";
-import useUserInfoHook from "../../userInfo/userInfoHook";
+import useUserInfoHook from "../../userInfo/UserInfoHook";
 
 interface Props {
   originalUrl?: string;
@@ -70,8 +70,12 @@ const Login = (props: Props) => {
 
   const inputFieldGenerator = () => {
     return (
-      <>        
-        <AuthenticationFields keyDownFunction={loginOnEnter} setAlias={setAlias} setPassword={setPassword} />
+      <>
+        <AuthenticationFields
+          keyDownFunction={loginOnEnter}
+          setAlias={setAlias}
+          setPassword={setPassword}
+        />
       </>
     );
   };

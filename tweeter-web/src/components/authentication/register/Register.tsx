@@ -7,7 +7,7 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import useToastListener from "../../toaster/ToastListenerHook";
 import { AuthenticationFields } from "../AuthenticationFields";
-import useUserInfoHook from "../../userInfo/userInfoHook";
+import useUserInfoHook from "../../userInfo/UserInfoHook";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -155,7 +155,11 @@ const Register = () => {
           />
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
-        <AuthenticationFields keyDownFunction={registerOnEnter} setAlias={setAlias} setPassword={setPassword} />
+        <AuthenticationFields
+          keyDownFunction={registerOnEnter}
+          setAlias={setAlias}
+          setPassword={setPassword}
+        />
         <div className="form-floating mb-3">
           <input
             type="file"
