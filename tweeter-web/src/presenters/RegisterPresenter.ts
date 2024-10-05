@@ -1,4 +1,4 @@
-import { UserPresenter, UserView } from "./UserPresenter";
+import { UserPresenter, UserView } from "./UserAccessPresenter";
 
 export class RegisterPresenter extends UserPresenter {
   public constructor(view: UserView) {

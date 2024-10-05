@@ -19,7 +19,7 @@ import { FollowerPresenter } from "./presenters/FollowerPresenter";
 import { FeedPresenter } from "./presenters/FeedPresenter";
 import { StatusView } from "./presenters/StatusPresenter";
 import { StoryPresenter } from "./presenters/StoryPresenter";
-import { UserView } from "./presenters/UserPresenter";
+import { UserView } from "./presenters/UserAccessPresenter";
 import { LoginPresenter } from "./presenters/LoginPresenter";
 import { RegisterPresenter } from "./presenters/RegisterPresenter";
 

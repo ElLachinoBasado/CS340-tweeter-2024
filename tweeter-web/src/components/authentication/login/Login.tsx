@@ -6,7 +6,10 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import { AuthenticationFields } from "../AuthenticationFields";
 import useUserInfoHook from "../../userInfo/UserInfoHook";
-import { UserPresenter, UserView } from "../../../presenters/UserPresenter";
+import {
+  UserPresenter,
+  UserView,
+} from "../../../presenters/UserAccessPresenter";
 
 interface Props {
   presenterGenerator: (view: UserView) => UserPresenter;
