@@ -1,8 +1,8 @@
-import { UserPresenter, UserView } from "./UserAccessPresenter";
+import { UserAccessPresenter, UserAccessView } from "./UserAccessPresenter";
 
-export class LoginPresenter extends UserPresenter {
+export class LoginPresenter extends UserAccessPresenter {
   private originalUrl: string | undefined;
-  public constructor(view: UserView, originalUrl?: string) {
+  public constructor(view: UserAccessView, originalUrl?: string) {
     super(view);
     this.originalUrl = originalUrl;
   }

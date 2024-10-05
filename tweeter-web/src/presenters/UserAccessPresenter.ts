@@ -3,7 +3,7 @@ import { UserService } from "../model/service/UserService";
 import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
 
-export interface UserView {
+export interface UserAccessView {
   navigate: NavigateFunction;
   displayErrorMessage(message: string): void;
   updateUserInfo(
@@ -14,13 +14,13 @@ export interface UserView {
   ): void;
 }
 
-export abstract class UserPresenter {
-  private _view: UserView;
+export abstract class UserAccessPresenter {
+  private _view: UserAccessView;
   private _userService: UserService;
   private _isLoading: boolean;
   private _rememberMe: boolean;
 
-  protected constructor(view: UserView) {
+  protected constructor(view: UserAccessView) {
     this._view = view;
     this._userService = new UserService();
     this._isLoading = false;

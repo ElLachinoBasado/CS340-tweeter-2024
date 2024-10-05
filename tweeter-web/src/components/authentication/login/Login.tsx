@@ -7,12 +7,12 @@ import useToastListener from "../../toaster/ToastListenerHook";
 import { AuthenticationFields } from "../AuthenticationFields";
 import useUserInfoHook from "../../userInfo/UserInfoHook";
 import {
-  UserPresenter,
-  UserView,
+  UserAccessPresenter,
+  UserAccessView,
 } from "../../../presenters/UserAccessPresenter";
 
 interface Props {
-  presenterGenerator: (view: UserView) => UserPresenter;
+  presenterGenerator: (view: UserAccessView) => UserAccessPresenter;
 }
 
 const Login = (props: Props) => {
@@ -57,7 +57,7 @@ const Login = (props: Props) => {
     );
   };
 
-  const listener: UserView = {
+  const listener: UserAccessView = {
     navigate: navigate,
     displayErrorMessage: displayErrorMessage,
     updateUserInfo: updateUserInfo,

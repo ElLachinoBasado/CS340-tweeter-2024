@@ -1,7 +1,7 @@
-import { UserPresenter, UserView } from "./UserAccessPresenter";
+import { UserAccessPresenter, UserAccessView } from "./UserAccessPresenter";
 
-export class RegisterPresenter extends UserPresenter {
-  public constructor(view: UserView) {
+export class RegisterPresenter extends UserAccessPresenter {
+  public constructor(view: UserAccessView) {
     super(view);
   }
 
