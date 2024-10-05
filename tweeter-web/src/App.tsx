@@ -17,6 +17,9 @@ import useUserInfoHook from "./components/userInfo/UserInfoHook";
 import { FolloweePresenter } from "./presenters/FolloweePresenter";
 import { UserItemView } from "./presenters/UserItemPresenter";
 import { FollowerPresenter } from "./presenters/FollowerPresenter";
+import { FeedPresenter } from "./presenters/FeedPresenter";
+import { StatusView } from "./presenters/StatusPresenter";
+import { StoryPresenter } from "./presenters/StoryPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfoHook();
@@ -70,6 +73,7 @@ const AuthenticatedRoutes = () => {
             <StatusItemScroller
               errorMessage={"Failed to load feed items because of exception"}
               loadMoreItemsHelper={loadMoreFeedItems}
+              presenterGenerator={(view: StatusView) => new FeedPresenter(view)}
             />
           }
         />
@@ -79,6 +83,9 @@ const AuthenticatedRoutes = () => {
             <StatusItemScroller
               errorMessage={"Failed to load story items because of exception"}
               loadMoreItemsHelper={loadMoreStoryItems}
+              presenterGenerator={(view: StatusView) =>
+                new StoryPresenter(view)
+              }
             />
           }
         />

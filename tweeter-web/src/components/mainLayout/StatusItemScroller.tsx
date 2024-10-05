@@ -4,6 +4,7 @@ import { AuthToken, Status } from "tweeter-shared";
 import { StatusItem } from "../statusItem/StatusItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "../userInfo/UserInfoHook";
+import { StatusPresenter, StatusView } from "../../presenters/StatusPresenter";
 
 export const PAGE_SIZE = 10;
 
@@ -15,6 +16,7 @@ interface Props {
     pageSize: number,
     lastItem: Status | null
   ) => Promise<[Status[], boolean]>;
+  presenterGenerator: (view: StatusView) => StatusPresenter;
 }
 
 export const StatusItemScroller = (props: Props) => {
@@ -70,6 +72,9 @@ export const StatusItemScroller = (props: Props) => {
       displayErrorMessage(`${props.errorMessage}: ${error}`);
     }
   };
+
+  const listener: StatusView = {};
+  const [presenter] = useState(props.presenterGenerator(listener));
 
   return (
     <div className="container px-0 overflow-visible vh-100">
