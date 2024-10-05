@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "./UserInfoHook";
+import {
+  UserInfoPresenter,
+  UserInfoView,
+} from "../../presenters/UserInfoPresenter";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
@@ -186,6 +190,9 @@ const UserInfo = () => {
 
     return [followerCount, followeeCount];
   };
+
+  const listener: UserInfoView = {};
+  const [presenter] = useState(new UserInfoPresenter(listener));
 
   return (
     <div className={isLoading ? "loading" : ""}>
