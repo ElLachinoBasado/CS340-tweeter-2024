@@ -22,8 +22,6 @@ const Register = (props: Props) => {
   const [imageBytes, setImageBytes] = useState<Uint8Array>(new Uint8Array());
   const [imageUrl, setImageUrl] = useState<string>("");
   const [imageFileExtension, setImageFileExtension] = useState<string>("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfoHook();
@@ -88,49 +86,14 @@ const Register = (props: Props) => {
   };
 
   const doRegister = async () => {
-    try {
-      setIsLoading(true);
-
-      const [user, authToken] = await register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension
-      );
-
-      updateUserInfo(user, user, authToken, rememberMe);
-      navigate("/");
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const register = async (
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    userImageBytes: Uint8Array,
-    imageFileExtension: string
-  ): Promise<[User, AuthToken]> => {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
-
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user, FakeData.instance.authToken];
+    presenter.userAccountAction(
+      alias,
+      password,
+      firstName,
+      lastName,
+      imageBytes,
+      imageFileExtension
+    );
   };
 
   const inputFieldGenerator = () => {
@@ -188,7 +151,11 @@ const Register = (props: Props) => {
     );
   };
 
-  const listener: UserView = {};
+  const listener: UserView = {
+    navigate: navigate,
+    displayErrorMessage: displayErrorMessage,
+    updateUserInfo: updateUserInfo,
+  };
   const [presenter] = useState(props.presenterGenerator(listener));
 
   return (
@@ -198,9 +165,11 @@ const Register = (props: Props) => {
       oAuthHeading="Register with:"
       inputFieldGenerator={inputFieldGenerator}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
-      setRememberMe={setRememberMe}
+      setRememberMe={(rememberMe: boolean) =>
+        (presenter.rememberMe = rememberMe)
+      }
       submitButtonDisabled={checkSubmitButtonStatus}
-      isLoading={isLoading}
+      isLoading={presenter.isLoading}
       submit={doRegister}
     />
   );

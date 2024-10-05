@@ -10,15 +10,12 @@ import useUserInfoHook from "../../userInfo/UserInfoHook";
 import { UserPresenter, UserView } from "../../../presenters/UserPresenter";
 
 interface Props {
-  originalUrl?: string;
   presenterGenerator: (view: UserView) => UserPresenter;
 }
 
 const Login = (props: Props) => {
   const [alias, setAlias] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfoHook();
@@ -35,39 +32,7 @@ const Login = (props: Props) => {
   };
 
   const doLogin = async () => {
-    try {
-      setIsLoading(true);
-
-      const [user, authToken] = await login(alias, password);
-
-      updateUserInfo(user, user, authToken, rememberMe);
-
-      if (!!props.originalUrl) {
-        navigate(props.originalUrl);
-      } else {
-        navigate("/");
-      }
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to log user in because of exception: ${error}`
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const login = async (
-    alias: string,
-    password: string
-  ): Promise<[User, AuthToken]> => {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid alias or password");
-    }
-
-    return [user, FakeData.instance.authToken];
+    presenter.userAccountAction(alias, password);
   };
 
   const inputFieldGenerator = () => {
@@ -90,7 +55,11 @@ const Login = (props: Props) => {
     );
   };
 
-  const listener: UserView = {};
+  const listener: UserView = {
+    navigate: navigate,
+    displayErrorMessage: displayErrorMessage,
+    updateUserInfo: updateUserInfo,
+  };
   const [presenter] = useState(props.presenterGenerator(listener));
 
   return (
@@ -100,9 +69,11 @@ const Login = (props: Props) => {
       oAuthHeading="Sign in with:"
       inputFieldGenerator={inputFieldGenerator}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
-      setRememberMe={setRememberMe}
+      setRememberMe={(rememberMe: boolean) =>
+        (presenter.rememberMe = rememberMe)
+      }
       submitButtonDisabled={checkSubmitButtonStatus}
-      isLoading={isLoading}
+      isLoading={presenter.isLoading}
       submit={doLogin}
     />
   );
