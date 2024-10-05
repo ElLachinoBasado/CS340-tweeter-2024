@@ -189,7 +189,7 @@ const Register = (props: Props) => {
   };
 
   const listener: UserView = {};
-  const [presenter] = useState();
+  const [presenter] = useState(props.presenterGenerator(listener));
 
   return (
     <AuthenticationFormLayout

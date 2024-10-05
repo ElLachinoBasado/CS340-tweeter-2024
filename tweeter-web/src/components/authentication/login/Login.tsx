@@ -90,6 +90,9 @@ const Login = (props: Props) => {
     );
   };
 
+  const listener: UserView = {};
+  const [presenter] = useState(props.presenterGenerator(listener));
+
   return (
     <AuthenticationFormLayout
       headingText="Please Sign In"
