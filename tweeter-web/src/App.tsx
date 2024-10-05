@@ -43,26 +43,6 @@ const App = () => {
 };
 
 const AuthenticatedRoutes = () => {
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
-  const loadMoreStoryItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
   return (
     <Routes>
       <Route element={<MainLayout />}>
@@ -71,8 +51,6 @@ const AuthenticatedRoutes = () => {
           path="feed"
           element={
             <StatusItemScroller
-              errorMessage={"Failed to load feed items because of exception"}
-              loadMoreItemsHelper={loadMoreFeedItems}
               presenterGenerator={(view: StatusView) => new FeedPresenter(view)}
             />
           }
@@ -81,8 +59,6 @@ const AuthenticatedRoutes = () => {
           path="story"
           element={
             <StatusItemScroller
-              errorMessage={"Failed to load story items because of exception"}
-              loadMoreItemsHelper={loadMoreStoryItems}
               presenterGenerator={(view: StatusView) =>
                 new StoryPresenter(view)
               }

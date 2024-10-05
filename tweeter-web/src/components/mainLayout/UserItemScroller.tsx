@@ -9,8 +9,6 @@ import {
   UserItemView,
 } from "../../presenters/UserItemPresenter";
 
-export const PAGE_SIZE = 10;
-
 interface Props {
   presenterGenerator: (view: UserItemView) => UserItemPresenter;
 }
@@ -49,17 +47,16 @@ const UserItemScroller = (props: Props) => {
     presenter.reset();
   };
 
-  const listener: UserItemView = {
-    addItems: (newItems: User[]) => setNewItems(newItems),
-    displayErrorMessage: displayErrorMessage,
-  };
-
-  const [presenter] = useState(props.presenterGenerator(listener));
-
   const loadMoreItems = async () => {
     presenter.loadMoreItems(authToken!, displayedUser!.alias);
     setChangedDisplayedUser(false);
   };
+
+  const listener: UserItemView = {
+    addItems: (newItems: User[]) => setNewItems(newItems),
+    displayErrorMessage: displayErrorMessage,
+  };
+  const [presenter] = useState(props.presenterGenerator(listener));
 
   return (
     <div className="container px-0 overflow-visible vh-100">
