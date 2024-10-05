@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
-import useUserInfoHook from "./userInfoHook";
+import useUserInfoHook from "./UserInfoHook";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
@@ -14,7 +14,8 @@ const UserInfo = () => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
-  const { currentUser, authToken, displayedUser, setDisplayedUser } = useUserInfoHook();
+  const { currentUser, authToken, displayedUser, setDisplayedUser } =
+    useUserInfoHook();
 
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
@@ -151,10 +152,7 @@ const UserInfo = () => {
 
     try {
       setIsLoading(true);
-      displayInfoMessage(
-        `Unfollowing ${displayedUser!.name}...`,
-        0
-      );
+      displayInfoMessage(`Unfollowing ${displayedUser!.name}...`, 0);
 
       const [followerCount, followeeCount] = await unfollow(
         authToken!,
