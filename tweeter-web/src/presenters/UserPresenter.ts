@@ -1,6 +1,7 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { NavigateFunction } from "react-router-dom";
+import { Buffer } from "buffer";
 
 export interface UserView {
   navigate: NavigateFunction;
@@ -48,6 +49,47 @@ export abstract class UserPresenter {
 
   public set rememberMe(value: boolean) {
     this._rememberMe = value;
+  }
+
+  public handleImageFile(
+    file: File | undefined,
+    setImageUrl: (url: string) => void,
+    setImageBytes: (bytes: Uint8Array) => void,
+    setImageFileExtension: (fileExtension: string) => void
+  ) {
+    if (file) {
+      setImageUrl(URL.createObjectURL(file));
+
+      const reader = new FileReader();
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        const imageStringBase64 = event.target?.result as string;
+
+        // Remove unnecessary file metadata from the start of the string.
+        const imageStringBase64BufferContents =
+          imageStringBase64.split("base64,")[1];
+
+        const bytes: Uint8Array = Buffer.from(
+          imageStringBase64BufferContents,
+          "base64"
+        );
+
+        setImageBytes(bytes);
+      };
+      reader.readAsDataURL(file);
+
+      // Set image file extension (and move to a separate method)
+      const fileExtension = this.getFileExtension(file);
+      if (fileExtension) {
+        setImageFileExtension(fileExtension);
+      }
+    } else {
+      setImageUrl("");
+      setImageBytes(new Uint8Array());
+    }
+  }
+
+  public getFileExtension(file: File): string | undefined {
+    return file.name.split(".").pop();
   }
 
   public abstract userAccountAction(
