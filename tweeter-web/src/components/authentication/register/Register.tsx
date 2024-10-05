@@ -8,8 +8,13 @@ import { Buffer } from "buffer";
 import useToastListener from "../../toaster/ToastListenerHook";
 import { AuthenticationFields } from "../AuthenticationFields";
 import useUserInfoHook from "../../userInfo/UserInfoHook";
+import { UserPresenter, UserView } from "../../../presenters/UserPresenter";
 
-const Register = () => {
+interface Props {
+  presenterGenerator: (view: UserView) => UserPresenter;
+}
+
+const Register = (props: Props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [alias, setAlias] = useState("");
@@ -182,6 +187,9 @@ const Register = () => {
       </div>
     );
   };
+
+  const listener: UserView = {};
+  const [presenter] = useState();
 
   return (
     <AuthenticationFormLayout

@@ -7,9 +7,11 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";
 import { AuthenticationFields } from "../AuthenticationFields";
 import useUserInfoHook from "../../userInfo/UserInfoHook";
+import { UserPresenter, UserView } from "../../../presenters/UserPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenterGenerator: (view: UserView) => UserPresenter;
 }
 
 const Login = (props: Props) => {
