@@ -5,7 +5,6 @@ export interface UserInfoView {
   displayErrorMessage(message: string): void;
   displayInfoMessage(message: string, duration: number): void;
   clearLastInfoMessage(): void;
-  setIsLoading(isLoading: boolean): void;
 }
 
 export class UserInfoPresenter {
@@ -16,6 +15,7 @@ export class UserInfoPresenter {
   private _isFollower: boolean;
   private _followeeCount: number;
   private _followerCount: number;
+  private _isLoading: boolean;
 
   public constructor(
     view: UserInfoView,
@@ -29,6 +29,7 @@ export class UserInfoPresenter {
     this._isFollower = false;
     this._followeeCount = -1;
     this._followerCount = -1;
+    this._isLoading = false;
   }
 
   public async setIsFollowerStatus(displayedUser: User) {
@@ -82,7 +83,7 @@ export class UserInfoPresenter {
     event.preventDefault();
 
     try {
-      this.view.setIsLoading(true);
+      this.isLoading = true;
       this.view.displayInfoMessage(`Following ${displayedUser!.name}...`, 0);
 
       const [followerCount, followeeCount] = await this.followService.follow(
@@ -99,7 +100,7 @@ export class UserInfoPresenter {
       );
     } finally {
       this.view.clearLastInfoMessage();
-      this.view.setIsLoading(false);
+      this.isLoading = false;
     }
   }
 
@@ -110,7 +111,7 @@ export class UserInfoPresenter {
     event.preventDefault();
 
     try {
-      this.view.setIsLoading(true);
+      this.isLoading = true;
       this.view.displayInfoMessage(`Unfollowing ${displayedUser!.name}...`, 0);
 
       const [followerCount, followeeCount] = await this.followService.unfollow(
@@ -127,7 +128,7 @@ export class UserInfoPresenter {
       );
     } finally {
       this.view.clearLastInfoMessage();
-      this.view.setIsLoading(false);
+      this.isLoading = false;
     }
   }
 
@@ -153,5 +154,13 @@ export class UserInfoPresenter {
 
   private set followerCount(followerCount: number) {
     this._followerCount = followerCount;
+  }
+
+  public get isLoading() {
+    return this._isLoading;
+  }
+
+  private set isLoading(isLoading: boolean) {
+    this._isLoading = isLoading;
   }
 }

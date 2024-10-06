@@ -10,8 +10,6 @@ import {
 } from "../../presenters/UserInfoPresenter";
 
 const UserInfo = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -61,14 +59,13 @@ const UserInfo = () => {
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,
-    setIsLoading: setIsLoading,
   };
   const [presenter] = useState(
     new UserInfoPresenter(listener, currentUser!, authToken!)
   );
 
   return (
-    <div className={isLoading ? "loading" : ""}>
+    <div className={presenter.isLoading ? "loading" : ""}>
       {currentUser === null || displayedUser === null || authToken === null ? (
         <></>
       ) : (
@@ -117,7 +114,7 @@ const UserInfo = () => {
                       style={{ width: "6em" }}
                       onClick={(event) => unfollowDisplayedUser(event)}
                     >
-                      {isLoading ? (
+                      {presenter.isLoading ? (
                         <span
                           className="spinner-border spinner-border-sm"
                           role="status"
@@ -135,7 +132,7 @@ const UserInfo = () => {
                       style={{ width: "6em" }}
                       onClick={(event) => followDisplayedUser(event)}
                     >
-                      {isLoading ? (
+                      {presenter.isLoading ? (
                         <span
                           className="spinner-border spinner-border-sm"
                           role="status"
