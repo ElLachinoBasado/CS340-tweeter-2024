@@ -3,6 +3,10 @@ import { useState } from "react";
 import { AuthToken, Status } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "../userInfo/UserInfoHook";
+import {
+  PostStatusPresenter,
+  PostStatusView,
+} from "../../presenters/PostStatusPresenter";
 
 const PostStatus = () => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
@@ -53,6 +57,9 @@ const PostStatus = () => {
   const checkButtonStatus: () => boolean = () => {
     return !post.trim() || !authToken || !currentUser;
   };
+
+  const listener: PostStatusView = {};
+  const [presenter] = useState(new PostStatusPresenter(listener));
 
   return (
     <div className={isLoading ? "loading" : ""}>
