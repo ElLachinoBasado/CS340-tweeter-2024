@@ -10,9 +10,6 @@ import {
 } from "../../presenters/UserInfoPresenter";
 
 const UserInfo = () => {
-  const [isFollower, setIsFollower] = useState(false);
-  const [followeeCount, setFolloweeCount] = useState(-1);
-  const [followerCount, setFollowerCount] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
 
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
@@ -67,14 +64,7 @@ const UserInfo = () => {
     setIsLoading: setIsLoading,
   };
   const [presenter] = useState(
-    new UserInfoPresenter(
-      listener,
-      currentUser!,
-      authToken!,
-      setIsFollower,
-      setFolloweeCount,
-      setFollowerCount
-    )
+    new UserInfoPresenter(listener, currentUser!, authToken!)
   );
 
   return (
@@ -109,16 +99,17 @@ const UserInfo = () => {
               </h2>
               <h3>{displayedUser.alias}</h3>
               <br />
-              {followeeCount > -1 && followerCount > -1 && (
+              {presenter.followeeCount > -1 && presenter.followerCount > -1 && (
                 <div>
-                  Followees: {followeeCount} Followers: {followerCount}
+                  Followees: {presenter.followeeCount} Followers:{" "}
+                  {presenter.followerCount}
                 </div>
               )}
             </div>
             <form>
               {displayedUser !== currentUser && (
                 <div className="form-group">
-                  {isFollower ? (
+                  {presenter.isFollower ? (
                     <button
                       id="unFollowButton"
                       className="btn btn-md btn-secondary me-1"

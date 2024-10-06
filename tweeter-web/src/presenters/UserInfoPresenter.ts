@@ -13,38 +13,33 @@ export class UserInfoPresenter {
   private followService: FollowService;
   private currentUser: User;
   private authToken: AuthToken;
-  private setIsFollower: (isFollower: boolean) => void;
-  private setFolloweeCount: (followeeCount: number) => void;
-  private setFollowerCount: (followerCount: number) => void;
+  private _isFollower: boolean;
+  private _followeeCount: number;
+  private _followerCount: number;
 
   public constructor(
     view: UserInfoView,
     currentUser: User,
-    authToken: AuthToken,
-    setIsFollower: (isFollower: boolean) => void,
-    setFolloweeCount: (followeeCount: number) => void,
-    setFollowerCount: (followerCount: number) => void
+    authToken: AuthToken
   ) {
     this.view = view;
     this.followService = new FollowService();
     this.currentUser = currentUser;
     this.authToken = authToken;
-    this.setIsFollower = setIsFollower;
-    this.setFolloweeCount = setFolloweeCount;
-    this.setFollowerCount = setFollowerCount;
+    this._isFollower = false;
+    this._followeeCount = -1;
+    this._followerCount = -1;
   }
 
   public async setIsFollowerStatus(displayedUser: User) {
     try {
       if (this.currentUser === displayedUser) {
-        this.setIsFollower(false);
+        this.isFollower = true;
       } else {
-        this.setIsFollower(
-          await this.followService.getIsFollowerStatus(
-            this.authToken!,
-            this.currentUser!,
-            displayedUser!
-          )
+        this.isFollower = await this.followService.getIsFollowerStatus(
+          this.authToken!,
+          this.currentUser!,
+          displayedUser!
         );
       }
     } catch (error) {
@@ -56,11 +51,9 @@ export class UserInfoPresenter {
 
   public async setNumbFollowees(displayedUser: User) {
     try {
-      this.setFolloweeCount(
-        await this.followService.getFolloweeCount(
-          this.authToken!,
-          displayedUser
-        )
+      this.followeeCount = await this.followService.getFolloweeCount(
+        this.authToken!,
+        displayedUser
       );
     } catch (error) {
       this.view.displayErrorMessage(
@@ -71,11 +64,9 @@ export class UserInfoPresenter {
 
   public async setNumbFollowers(displayedUser: User) {
     try {
-      this.setFollowerCount(
-        await this.followService.getFollowerCount(
-          this.authToken!,
-          displayedUser
-        )
+      this.followerCount = await this.followService.getFollowerCount(
+        this.authToken!,
+        displayedUser
       );
     } catch (error) {
       this.view.displayErrorMessage(
@@ -99,9 +90,9 @@ export class UserInfoPresenter {
         displayedUser!
       );
 
-      this.setIsFollower(true);
-      this.setFollowerCount(followerCount);
-      this.setFolloweeCount(followeeCount);
+      this.isFollower = true;
+      this.followerCount = followerCount;
+      this.followeeCount = followeeCount;
     } catch (error) {
       this.view.displayErrorMessage(
         `Failed to follow user because of exception: ${error}`
@@ -127,9 +118,9 @@ export class UserInfoPresenter {
         displayedUser!
       );
 
-      this.setIsFollower(false);
-      this.setFollowerCount(followerCount);
-      this.setFolloweeCount(followeeCount);
+      this.isFollower = false;
+      this.followerCount = followerCount;
+      this.followeeCount = followeeCount;
     } catch (error) {
       this.view.displayErrorMessage(
         `Failed to unfollow user because of exception: ${error}`
@@ -138,5 +129,29 @@ export class UserInfoPresenter {
       this.view.clearLastInfoMessage();
       this.view.setIsLoading(false);
     }
+  }
+
+  public get isFollower() {
+    return this._isFollower;
+  }
+
+  private set isFollower(isFollower: boolean) {
+    this._isFollower = isFollower;
+  }
+
+  public get followeeCount() {
+    return this._followeeCount;
+  }
+
+  private set followeeCount(followeeCount: number) {
+    this._followeeCount = followeeCount;
+  }
+
+  public get followerCount() {
+    return this._followerCount;
+  }
+
+  private set followerCount(followerCount: number) {
+    this._followerCount = followerCount;
   }
 }
