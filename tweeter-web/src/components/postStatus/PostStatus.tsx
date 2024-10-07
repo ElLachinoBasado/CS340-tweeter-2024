@@ -20,7 +20,8 @@ const PostStatus = () => {
     currentUser: User,
     authToken: AuthToken
   ) => {
-    presenter.submitPost(event, currentUser, authToken, post);
+    event.preventDefault();
+    presenter.submitPost(currentUser, authToken, post);
   };
 
   const clearPost = (event: React.MouseEvent) => {

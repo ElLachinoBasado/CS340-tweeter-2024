@@ -46,7 +46,8 @@ const UserInfo = () => {
   const followDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
-    presenter.followDisplayedUser(event, displayedUser!);
+    event.preventDefault();
+    presenter.followDisplayedUser( displayedUser!);
   };
 
   const unfollowDisplayedUser = async (

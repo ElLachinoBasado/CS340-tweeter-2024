@@ -19,13 +19,10 @@ export class PostStatusPresenter {
   }
 
   public async submitPost(
-    event: React.MouseEvent,
     currentUser: User,
     authToken: AuthToken,
     post: string
   ) {
-    event.preventDefault();
-
     try {
       this.isLoading = true;
       this.view.displayInfoMessage("Posting status...", 0);

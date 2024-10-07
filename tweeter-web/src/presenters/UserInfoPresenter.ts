@@ -76,12 +76,7 @@ export class UserInfoPresenter {
     }
   }
 
-  public async followDisplayedUser(
-    event: React.MouseEvent,
-    displayedUser: User
-  ) {
-    event.preventDefault();
-
+  public async followDisplayedUser(displayedUser: User) {
     try {
       this.isLoading = true;
       this.view.displayInfoMessage(`Following ${displayedUser!.name}...`, 0);

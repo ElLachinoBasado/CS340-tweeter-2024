@@ -20,8 +20,6 @@ export class UserPresenter {
     currentUser: User | null,
     authToken: AuthToken | null
   ) {
-    event.preventDefault();
-
     try {
       const alias = this.extractAlias(event.target.toString());
 

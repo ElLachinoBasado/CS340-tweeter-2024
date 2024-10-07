@@ -12,6 +12,7 @@ export const useUserNavigation = (): UserNavigationHook => {
   const { displayErrorMessage } = useToastListener();
 
   const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
+    event.preventDefault();
     presenter.navigateToUser(event, currentUser, authToken);
   };
 
