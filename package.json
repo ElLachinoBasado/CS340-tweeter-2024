@@ -10,5 +10,11 @@
   "dependencies": {
     "rimraf": "^5.0.5",
     "vite-plugin-dts": "^3.7.3"
+  },
+  "devDependencies": {
+    "jscpd": "^4.0.5"
+  },
+  "scripts": {
+    "check-duplication": "npx jscpd tweeter-web/src"
   }
 }
