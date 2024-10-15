@@ -1,10 +1,10 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { NavigateFunction } from "react-router-dom";
+import { Presenter, View } from "./Presenter";
 
-export interface UserAccessView {
+export interface UserAccessView extends View {
   navigate: NavigateFunction;
-  displayErrorMessage(message: string): void;
   updateUserInfo(
     currentUser: User,
     displayedUser: User | null,
@@ -13,21 +13,16 @@ export interface UserAccessView {
   ): void;
 }
 
-export abstract class UserAccessPresenter {
-  private _view: UserAccessView;
+export abstract class UserAccessPresenter extends Presenter<UserAccessView> {
   private _userService: UserService;
   private _isLoading: boolean;
   private _rememberMe: boolean;
 
   protected constructor(view: UserAccessView) {
-    this._view = view;
+    super(view);
     this._userService = new UserService();
     this._isLoading = false;
     this._rememberMe = false;
-  }
-
-  protected get view() {
-    return this._view;
   }
 
   protected get userService() {

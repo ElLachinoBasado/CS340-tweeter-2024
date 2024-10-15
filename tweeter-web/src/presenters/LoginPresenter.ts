@@ -8,24 +8,24 @@ export class LoginPresenter extends UserAccessPresenter {
   }
 
   public async userAccountAction(alias: string, password: string) {
-    try {
-      this.isLoading = true;
+    this.doFailureReportingOperation(
+      async () => {
+        this.isLoading = true;
 
-      const [user, authToken] = await this.userService.login(alias, password);
+        const [user, authToken] = await this.userService.login(alias, password);
 
-      this.view.updateUserInfo(user, user, authToken, this.rememberMe);
+        this.view.updateUserInfo(user, user, authToken, this.rememberMe);
 
-      if (!!this.originalUrl) {
-        this.view.navigate(this.originalUrl);
-      } else {
-        this.view.navigate("/");
+        if (!!this.originalUrl) {
+          this.view.navigate(this.originalUrl);
+        } else {
+          this.view.navigate("/");
+        }
+      },
+      "log user in",
+      () => {
+        this.isLoading = false;
       }
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to log user in because of exception: ${error}`
-      );
-    } finally {
-      this.isLoading = false;
-    }
+    );
   }
 }

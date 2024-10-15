@@ -1,43 +1,38 @@
 import { AuthToken, User } from "tweeter-shared";
+import { Presenter, View } from "./Presenter";
 
-export interface UserItemView {
-    addItems(newItems: User[]): void;
-    displayErrorMessage(message: string): void;
+export interface UserItemView extends View {
+  addItems(newItems: User[]): void;
 }
 
-export abstract class UserItemPresenter {
-    private _view: UserItemView;
-    private _hasMoreItems = true;
-    private _lastItem: User | null = null;        
+export abstract class UserItemPresenter extends Presenter<UserItemView> {
+  private _hasMoreItems = true;
+  private _lastItem: User | null = null;
 
-    protected constructor(view: UserItemView) {
-        this._view = view;
-    }
+  protected constructor(view: UserItemView) {
+    super(view);
+  }
 
-    protected get view() {
-        return this._view;
-    }
+  protected get lastItem() {
+    return this._lastItem;
+  }
 
-    protected get lastItem() {
-        return this._lastItem;
-    }
+  public get hasMoreItems() {
+    return this._hasMoreItems;
+  }
 
-    public get hasMoreItems() {
-        return this._hasMoreItems;
-    }
+  protected set hasMoreItems(value: boolean) {
+    this._hasMoreItems = value;
+  }
 
-    protected set hasMoreItems(value: boolean) {
-        this._hasMoreItems = value;
-    }
+  protected set lastItem(value: User | null) {
+    this._lastItem = value;
+  }
 
-    protected set lastItem(value: User | null) {
-        this._lastItem = value;
-    }
+  public reset() {
+    this._lastItem = null;
+    this._hasMoreItems = true;
+  }
 
-    public reset() {
-        this._lastItem = null;
-        this._hasMoreItems = true;
-    }
-
-    public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;
+  public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;
 }

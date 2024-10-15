@@ -1,20 +1,19 @@
 import { AuthToken, Status, User } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
+import { Presenter, View } from "./Presenter";
 
-export interface PostStatusView {
-  displayErrorMessage(message: string): void;
+export interface PostStatusView extends View {
   displayInfoMessage(message: string, duration: number): void;
   clearLastInfoMessage(): void;
   setPost: (post: string) => void;
 }
 
-export class PostStatusPresenter {
-  private view: PostStatusView;
+export class PostStatusPresenter extends Presenter<PostStatusView> {
   private statusService: StatusService;
   private _isLoading: boolean = false;
 
   public constructor(view: PostStatusView) {
-    this.view = view;
+    super(view);
     this.statusService = new StatusService();
   }
 
@@ -23,24 +22,24 @@ export class PostStatusPresenter {
     authToken: AuthToken,
     post: string
   ) {
-    try {
-      this.isLoading = true;
-      this.view.displayInfoMessage("Posting status...", 0);
+    this.doFailureReportingOperation(
+      async () => {
+        this.isLoading = true;
+        this.view.displayInfoMessage("Posting status...", 0);
 
-      const status = new Status(post, currentUser!, Date.now());
+        const status = new Status(post, currentUser!, Date.now());
 
-      await this.statusService.postStatus(authToken!, status);
+        await this.statusService.postStatus(authToken!, status);
 
-      this.view.setPost("");
-      this.view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`
-      );
-    } finally {
-      this.view.clearLastInfoMessage();
-      this.isLoading = false;
-    }
+        this.view.setPost("");
+        this.view.displayInfoMessage("Status posted!", 2000);
+      },
+      "post the status",
+      () => {
+        this.view.clearLastInfoMessage();
+        this.isLoading = false;
+      }
+    );
   }
 
   public get isLoading() {
