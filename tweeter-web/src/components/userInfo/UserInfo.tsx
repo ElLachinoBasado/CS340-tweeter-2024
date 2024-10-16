@@ -8,6 +8,7 @@ import {
   UserInfoPresenter,  
 } from "../../presenters/UserInfoPresenter";
 import { InfoMessageView } from "../../presenters/InfoMessagePresenter";
+import { FollowButton } from "./FollowButton";
 
 const UserInfo = () => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
@@ -106,45 +107,21 @@ const UserInfo = () => {
               )}
             </div>
             <form>
-              {displayedUser !== currentUser && (
+            {displayedUser !== currentUser && (
                 <div className="form-group">
-                  {presenter.isFollower ? (
-                    <button
-                      id="unFollowButton"
-                      className="btn btn-md btn-secondary me-1"
-                      type="submit"
-                      style={{ width: "6em" }}
-                      onClick={(event) => unfollowDisplayedUser(event)}
-                    >
-                      {presenter.isLoading ? (
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                      ) : (
-                        <div>Unfollow</div>
-                      )}
-                    </button>
-                  ) : (
-                    <button
-                      id="followButton"
-                      className="btn btn-md btn-primary me-1"
-                      type="submit"
-                      style={{ width: "6em" }}
-                      onClick={(event) => followDisplayedUser(event)}
-                    >
-                      {presenter.isLoading ? (
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                      ) : (
-                        <div>Follow</div>
-                      )}
-                    </button>
-                  )}
+                  <FollowButton
+                    id={presenter.isFollower ? "unFollowButton" : "followButton"}
+                    className={`btn btn-md ${
+                      presenter.isFollower ? "btn-secondary" : "btn-primary"
+                    } me-1`}
+                    onClick={
+                      presenter.isFollower
+                        ? unfollowDisplayedUser
+                        : followDisplayedUser
+                    }
+                    isLoading={presenter.isLoading}
+                    buttonText={presenter.isFollower ? "Unfollow" : "Follow"}
+                  />
                 </div>
               )}
             </form>
