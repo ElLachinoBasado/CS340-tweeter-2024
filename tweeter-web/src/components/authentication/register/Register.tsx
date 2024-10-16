@@ -10,6 +10,7 @@ import {
   UserAccessView,
 } from "../../../presenters/UserAccessPresenter";
 import { RegisterPresenter } from "../../../presenters/RegisterPresenter";
+import { useUserAccessListener } from "../UserAccessListenerHook";
 
 interface Props {
   presenterGenerator: (view: UserAccessView) => RegisterPresenter;
@@ -23,10 +24,6 @@ const Register = (props: Props) => {
   const [imageBytes, setImageBytes] = useState<Uint8Array>(new Uint8Array());
   const [imageUrl, setImageUrl] = useState<string>("");
   const [imageFileExtension, setImageFileExtension] = useState<string>("");
-
-  const navigate = useNavigate();
-  const { updateUserInfo } = useUserInfoHook();
-  const { displayErrorMessage } = useToastListener();
 
   const checkSubmitButtonStatus = (): boolean => {
     return (
@@ -121,11 +118,7 @@ const Register = (props: Props) => {
     );
   };
 
-  const listener: UserAccessView = {
-    navigate: navigate,
-    displayErrorMessage: displayErrorMessage,
-    updateUserInfo: updateUserInfo,
-  };
+  const listener = useUserAccessListener();
   const [presenter] = useState(props.presenterGenerator(listener));
 
   return (

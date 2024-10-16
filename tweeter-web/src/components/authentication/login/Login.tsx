@@ -10,6 +10,7 @@ import {
   UserAccessView,
 } from "../../../presenters/UserAccessPresenter";
 import { LoginPresenter } from "../../../presenters/LoginPresenter";
+import { useUserAccessListener } from "../UserAccessListenerHook";
 
 interface Props {
   presenterGenerator: (view: UserAccessView) => LoginPresenter;
@@ -18,10 +19,6 @@ interface Props {
 const Login = (props: Props) => {
   const [alias, setAlias] = useState("");
   const [password, setPassword] = useState("");
-
-  const navigate = useNavigate();
-  const { updateUserInfo } = useUserInfoHook();
-  const { displayErrorMessage } = useToastListener();
 
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;
@@ -57,11 +54,7 @@ const Login = (props: Props) => {
     );
   };
 
-  const listener: UserAccessView = {
-    navigate: navigate,
-    displayErrorMessage: displayErrorMessage,
-    updateUserInfo: updateUserInfo,
-  };
+  const listener = useUserAccessListener();
   const [presenter] = useState(props.presenterGenerator(listener));
 
   return (
