@@ -7,7 +7,7 @@ import useUserInfoHook from "./UserInfoHook";
 import {
   UserInfoPresenter,  
 } from "../../presenters/UserInfoPresenter";
-import { InfoMessageView } from "../../presenters/Presenter";
+import { InfoMessageView } from "../../presenters/InfoMessagePresenter";
 
 const UserInfo = () => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =

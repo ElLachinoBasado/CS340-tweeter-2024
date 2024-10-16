@@ -1,9 +1,9 @@
 import { AuthToken, User } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
-import { InfoMessageView } from "./Presenter";
 import { IsLoadingPresenter } from "./IsLoadingPresenter";
+import { InfoMessagePresenter, InfoMessageView } from "./InfoMessagePresenter";
 
-export class UserInfoPresenter extends IsLoadingPresenter<
+export class UserInfoPresenter extends InfoMessagePresenter<
   InfoMessageView,
   FollowService
 > {
@@ -74,10 +74,7 @@ export class UserInfoPresenter extends IsLoadingPresenter<
         this.followeeCount = followeeCount;
       },
       "follow user",
-      () => {
-        this.view.clearLastInfoMessage();
-        this.isLoading = false;
-      }
+      () => this.finallyClearInfoMessage()
     );
   }
 
@@ -104,10 +101,7 @@ export class UserInfoPresenter extends IsLoadingPresenter<
         this.followeeCount = followeeCount;
       },
       "unfollow user",
-      () => {
-        this.view.clearLastInfoMessage();
-        this.isLoading = false;
-      }
+      () => this.finallyClearInfoMessage()
     );
   }
 

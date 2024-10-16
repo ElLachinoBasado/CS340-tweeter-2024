@@ -1,13 +1,13 @@
 import { AuthToken, Status, User } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
-import { InfoMessageView } from "./Presenter";
 import { IsLoadingPresenter } from "./IsLoadingPresenter";
+import { InfoMessagePresenter, InfoMessageView } from "./InfoMessagePresenter";
 
 export interface PostStatusView extends InfoMessageView {
   setPost: (post: string) => void;
 }
 
-export class PostStatusPresenter extends IsLoadingPresenter<
+export class PostStatusPresenter extends InfoMessagePresenter<
   PostStatusView,
   StatusService
 > {
@@ -33,10 +33,7 @@ export class PostStatusPresenter extends IsLoadingPresenter<
         this.view.displayInfoMessage("Status posted!", 2000);
       },
       "post the status",
-      () => {
-        this.view.clearLastInfoMessage();
-        this.isLoading = false;
-      }
+      () => this.finallyClearInfoMessage()
     );
   }
 

@@ -1,8 +1,3 @@
-export interface InfoMessageView extends View {
-  displayInfoMessage(message: string, duration: number): void;
-  clearLastInfoMessage(): void;
-}
-
 export interface View {
   displayErrorMessage(message: string): void;
 }
