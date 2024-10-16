@@ -1,4 +1,3 @@
-
 import { Status } from "tweeter-shared";
 import { StatusItem } from "../statusItem/StatusItem";
 import { StatusPresenter } from "../../presenters/StatusPresenter";
