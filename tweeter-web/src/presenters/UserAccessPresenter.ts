@@ -20,7 +20,7 @@ export abstract class UserAccessPresenter extends IsLoadingPresenter<
 > {
   private _rememberMe: boolean;
 
-  protected constructor(view: UserAccessView) {
+  public constructor(view: UserAccessView) {
     super(view);
     this._rememberMe = false;
   }
@@ -37,12 +37,45 @@ export abstract class UserAccessPresenter extends IsLoadingPresenter<
     return new UserService();
   }
 
-  public abstract userAccountAction(
+  public async userAccountAction(
     alias: string,
     password: string,
     firstName?: string,
     lastName?: string,
     imageBytes?: Uint8Array,
     imageFileExtension?: string
-  ): void;
+  ) {
+    this.doFailureReportingOperation(
+      async () => {
+        this.isLoading = true;
+        const [user, authToken] = await this.getUserInformation(
+          alias,
+          password,
+          firstName,
+          lastName,
+          imageBytes,
+          imageFileExtension
+        );
+        this.view.updateUserInfo(user, user, authToken, this.rememberMe);
+        this.navigateFunction();
+      },
+      this.getActionDescription(),
+      () => {
+        this.isLoading = false;
+      }
+    );
+  }
+
+  protected abstract getUserInformation(
+    alias: string,
+    password: string,
+    firstName?: string,
+    lastName?: string,
+    imageBytes?: Uint8Array,
+    imageFileExtension?: string
+  ): Promise<[User, AuthToken]>;
+
+  protected abstract navigateFunction(): void;
+
+  protected abstract getActionDescription(): string;
 }

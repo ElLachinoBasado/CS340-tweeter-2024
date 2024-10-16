@@ -1,3 +1,4 @@
+import { AuthToken, User } from "tweeter-shared";
 import { UserAccessPresenter, UserAccessView } from "./UserAccessPresenter";
 
 export class LoginPresenter extends UserAccessPresenter {
@@ -8,25 +9,22 @@ export class LoginPresenter extends UserAccessPresenter {
     this.originalUrl = originalUrl;
   }
 
-  public async userAccountAction(alias: string, password: string) {
-    this.doFailureReportingOperation(
-      async () => {
-        this.isLoading = true;
+  protected getUserInformation(
+    alias: string,
+    password: string
+  ): Promise<[User, AuthToken]> {
+    return this.service.login(alias, password);
+  }
 
-        const [user, authToken] = await this.service.login(alias, password);
+  protected navigateFunction(): void {
+    if (!!this.originalUrl) {
+      this.view.navigate(this.originalUrl);
+    } else {
+      this.view.navigate("/");
+    }
+  }
 
-        this.view.updateUserInfo(user, user, authToken, this.rememberMe);
-
-        if (!!this.originalUrl) {
-          this.view.navigate(this.originalUrl);
-        } else {
-          this.view.navigate("/");
-        }
-      },
-      "log user in",
-      () => {
-        this.isLoading = false;
-      }
-    );
+  protected getActionDescription(): string {
+    return "log user in";
   }
 }

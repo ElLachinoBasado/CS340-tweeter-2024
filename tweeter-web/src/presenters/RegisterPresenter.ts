@@ -1,42 +1,8 @@
-import { UserAccessPresenter, UserAccessView } from "./UserAccessPresenter";
+import { AuthToken, User } from "tweeter-shared";
+import { UserAccessPresenter } from "./UserAccessPresenter";
 import { Buffer } from "buffer";
 
 export class RegisterPresenter extends UserAccessPresenter {
-  public constructor(view: UserAccessView) {
-    super(view);
-  }
-
-  public async userAccountAction(
-    alias: string,
-    password: string,
-    firstName: string,
-    lastName: string,
-    imageBytes: Uint8Array,
-    imageFileExtension: string
-  ) {
-    this.doFailureReportingOperation(
-      async () => {
-        this.isLoading = true;
-
-        const [user, authToken] = await this.service.register(
-          firstName,
-          lastName,
-          alias,
-          password,
-          imageBytes,
-          imageFileExtension
-        );
-
-        this.view.updateUserInfo(user, user, authToken, this.rememberMe);
-        this.view.navigate("/");
-      },
-      "register user",
-      () => {
-        this.isLoading = false;
-      }
-    );
-  }
-
   public handleImageFile(
     file: File | undefined,
     setImageUrl: (url: string) => void,
@@ -76,5 +42,31 @@ export class RegisterPresenter extends UserAccessPresenter {
 
   private getFileExtension(file: File): string | undefined {
     return file.name.split(".").pop();
+  }
+
+  protected getUserInformation(
+    alias: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    imageBytes: Uint8Array,
+    imageFileExtension: string
+  ): Promise<[User, AuthToken]> {
+    return this.service.register(
+      firstName,
+      lastName,
+      alias,
+      password,
+      imageBytes,
+      imageFileExtension
+    );
+  }
+
+  protected navigateFunction(): void {
+    this.view.navigate("/");
+  }
+
+  protected getActionDescription(): string {
+    return "register user";
   }
 }
