@@ -2,6 +2,7 @@ import { UserAccessPresenter, UserAccessView } from "./UserAccessPresenter";
 
 export class LoginPresenter extends UserAccessPresenter {
   private originalUrl: string | undefined;
+
   public constructor(view: UserAccessView, originalUrl?: string) {
     super(view);
     this.originalUrl = originalUrl;
@@ -12,7 +13,7 @@ export class LoginPresenter extends UserAccessPresenter {
       async () => {
         this.isLoading = true;
 
-        const [user, authToken] = await this.userService.login(alias, password);
+        const [user, authToken] = await this.service.login(alias, password);
 
         this.view.updateUserInfo(user, user, authToken, this.rememberMe);
 

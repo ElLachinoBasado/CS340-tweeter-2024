@@ -18,7 +18,7 @@ export class RegisterPresenter extends UserAccessPresenter {
       async () => {
         this.isLoading = true;
 
-        const [user, authToken] = await this.userService.register(
+        const [user, authToken] = await this.service.register(
           firstName,
           lastName,
           alias,
@@ -72,5 +72,9 @@ export class RegisterPresenter extends UserAccessPresenter {
       setImageUrl("");
       setImageBytes(new Uint8Array());
     }
+  }
+
+  private getFileExtension(file: File): string | undefined {
+    return file.name.split(".").pop();
   }
 }

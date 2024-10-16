@@ -13,20 +13,17 @@ export interface UserAccessView extends View {
   ): void;
 }
 
-export abstract class UserAccessPresenter extends Presenter<UserAccessView> {
-  private _userService: UserService;
+export abstract class UserAccessPresenter extends Presenter<
+  UserAccessView,
+  UserService
+> {
   private _isLoading: boolean;
   private _rememberMe: boolean;
 
   protected constructor(view: UserAccessView) {
     super(view);
-    this._userService = new UserService();
     this._isLoading = false;
     this._rememberMe = false;
-  }
-
-  protected get userService() {
-    return this._userService;
   }
 
   public get isLoading() {
@@ -45,8 +42,8 @@ export abstract class UserAccessPresenter extends Presenter<UserAccessView> {
     this._rememberMe = value;
   }
 
-  public getFileExtension(file: File): string | undefined {
-    return file.name.split(".").pop();
+  protected createService(): UserService {
+    return new UserService();
   }
 
   public abstract userAccountAction(

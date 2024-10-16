@@ -8,13 +8,14 @@ export interface PostStatusView extends View {
   setPost: (post: string) => void;
 }
 
-export class PostStatusPresenter extends Presenter<PostStatusView> {
-  private statusService: StatusService;
+export class PostStatusPresenter extends Presenter<
+  PostStatusView,
+  StatusService
+> {
   private _isLoading: boolean = false;
 
   public constructor(view: PostStatusView) {
     super(view);
-    this.statusService = new StatusService();
   }
 
   public async submitPost(
@@ -29,7 +30,7 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
 
         const status = new Status(post, currentUser!, Date.now());
 
-        await this.statusService.postStatus(authToken!, status);
+        await this.service.postStatus(authToken!, status);
 
         this.view.setPost("");
         this.view.displayInfoMessage("Status posted!", 2000);
@@ -48,5 +49,9 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
 
   private set isLoading(isLoading: boolean) {
     this._isLoading = isLoading;
+  }
+
+  protected createService(): StatusService {
+    return new StatusService();
   }
 }

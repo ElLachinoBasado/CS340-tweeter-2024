@@ -2,15 +2,21 @@ export interface View {
   displayErrorMessage(message: string): void;
 }
 
-export class Presenter<V extends View> {
+export abstract class Presenter<V extends View, S> {
   private _view: V;
+  private _service: S;
 
   public constructor(view: V) {
     this._view = view;
+    this._service = this.createService();
   }
 
   protected get view(): V {
     return this._view;
+  }
+
+  protected get service() {
+    return this._service;
   }
 
   public async doFailureReportingOperation(
@@ -30,4 +36,6 @@ export class Presenter<V extends View> {
       }
     }
   }
+
+  protected abstract createService(): S;
 }

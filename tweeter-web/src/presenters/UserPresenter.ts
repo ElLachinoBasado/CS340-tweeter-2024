@@ -6,12 +6,9 @@ export interface UserView extends View {
   setDisplayedUser(user: User): void;
 }
 
-export class UserPresenter extends Presenter<UserView> {
-  private _userService: UserService;
-
+export class UserPresenter extends Presenter<UserView, UserService> {
   public constructor(view: UserView) {
     super(view);
-    this._userService = new UserService();
   }
 
   public async navigateToUser(
@@ -22,7 +19,7 @@ export class UserPresenter extends Presenter<UserView> {
     this.doFailureReportingOperation(async () => {
       const alias = this.extractAlias(event.target.toString());
 
-      const user = await this.userService.getUser(authToken!, alias);
+      const user = await this.service.getUser(authToken!, alias);
 
       if (!!user) {
         if (currentUser!.equals(user)) {
@@ -34,12 +31,12 @@ export class UserPresenter extends Presenter<UserView> {
     }, "get user");
   }
 
+  protected createService(): UserService {
+    return new UserService();
+  }
+
   private extractAlias(value: string): string {
     const index = value.indexOf("@");
     return value.substring(index);
-  }
-
-  protected get userService() {
-    return this._userService;
   }
 }
