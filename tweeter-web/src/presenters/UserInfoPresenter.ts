@@ -78,11 +78,7 @@ export class UserInfoPresenter extends InfoMessagePresenter<
     );
   }
 
-  public async unfollowDisplayedUser(
-    event: React.MouseEvent,
-    displayedUser: User
-  ) {
-    event.preventDefault();
+  public async unfollowDisplayedUser(displayedUser: User) {
     this.doFailureReportingOperation(
       async () => {
         this.isLoading = true;

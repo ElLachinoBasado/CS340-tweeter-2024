@@ -53,7 +53,8 @@ const UserInfo = () => {
   const unfollowDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
-    presenter.unfollowDisplayedUser(event, displayedUser!);
+    event.preventDefault();
+    presenter.unfollowDisplayedUser(displayedUser!);
   };
 
   const listener: InfoMessageView = {
