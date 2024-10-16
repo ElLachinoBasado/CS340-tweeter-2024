@@ -10,7 +10,7 @@ export class FeedPresenter extends StatusPresenter {
 
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     this.doFailureReportingOperation(async () => {
-      const [newItems, hasMore] = await this.statusService.loadMoreFeedItems(
+      const [newItems, hasMore] = await this.service.loadMoreFeedItems(
         authToken,
         userAlias,
         PAGE_SIZE,

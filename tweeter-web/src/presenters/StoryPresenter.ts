@@ -10,7 +10,7 @@ export class StoryPresenter extends StatusPresenter {
 
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     this.doFailureReportingOperation(async () => {
-      const [newItems, hasMore] = await this.statusService.loadMoreStoryItems(
+      const [newItems, hasMore] = await this.service.loadMoreStoryItems(
         authToken,
         userAlias,
         PAGE_SIZE,
