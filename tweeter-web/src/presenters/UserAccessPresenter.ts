@@ -2,6 +2,7 @@ import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { NavigateFunction } from "react-router-dom";
 import { Presenter, View } from "./Presenter";
+import { IsLoadingPresenter } from "./IsLoadingPresenter";
 
 export interface UserAccessView extends View {
   navigate: NavigateFunction;
@@ -13,25 +14,15 @@ export interface UserAccessView extends View {
   ): void;
 }
 
-export abstract class UserAccessPresenter extends Presenter<
+export abstract class UserAccessPresenter extends IsLoadingPresenter<
   UserAccessView,
   UserService
 > {
-  private _isLoading: boolean;
   private _rememberMe: boolean;
 
   protected constructor(view: UserAccessView) {
     super(view);
-    this._isLoading = false;
     this._rememberMe = false;
-  }
-
-  public get isLoading() {
-    return this._isLoading;
-  }
-
-  protected set isLoading(value: boolean) {
-    this._isLoading = value;
   }
 
   public get rememberMe() {

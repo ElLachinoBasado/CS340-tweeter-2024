@@ -1,19 +1,22 @@
 import { AuthToken, User } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
-import { Presenter, View } from "./Presenter";
+import { View } from "./Presenter";
+import { IsLoadingPresenter } from "./IsLoadingPresenter";
 
 export interface UserInfoView extends View {
   displayInfoMessage(message: string, duration: number): void;
   clearLastInfoMessage(): void;
 }
 
-export class UserInfoPresenter extends Presenter<UserInfoView, FollowService> {
+export class UserInfoPresenter extends IsLoadingPresenter<
+  UserInfoView,
+  FollowService
+> {
   private currentUser: User;
   private authToken: AuthToken;
   private _isFollower: boolean;
   private _followeeCount: number;
   private _followerCount: number;
-  private _isLoading: boolean;
 
   public constructor(
     view: UserInfoView,
@@ -26,7 +29,6 @@ export class UserInfoPresenter extends Presenter<UserInfoView, FollowService> {
     this._isFollower = false;
     this._followeeCount = -1;
     this._followerCount = -1;
-    this._isLoading = false;
   }
 
   public async setIsFollowerStatus(displayedUser: User) {
@@ -140,13 +142,5 @@ export class UserInfoPresenter extends Presenter<UserInfoView, FollowService> {
 
   private set followerCount(followerCount: number) {
     this._followerCount = followerCount;
-  }
-
-  public get isLoading() {
-    return this._isLoading;
-  }
-
-  private set isLoading(isLoading: boolean) {
-    this._isLoading = isLoading;
   }
 }
