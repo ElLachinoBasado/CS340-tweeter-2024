@@ -58,44 +58,53 @@ export class UserInfoPresenter extends InfoMessagePresenter<
   }
 
   public async followDisplayedUser(displayedUser: User) {
-    this.doFailureReportingOperation(
-      async () => {
-        this.isLoading = true;
-        this.view.displayInfoMessage(`Following ${displayedUser!.name}...`, 0);
-
-        const [followerCount, followeeCount] = await this.service.follow(
-          this.authToken!!,
-          displayedUser!
-        );
-
-        this.isFollower = true;
-        this.followerCount = followerCount;
-        this.followeeCount = followeeCount;
-      },
+    await this.handleDisplayedUserFollowUpdate(
+      displayedUser,
+      "Following",
       "follow user",
-      () => this.finallyClearInfoMessage()
+      true,
+      this.service.follow.bind(this.service)
     );
   }
 
   public async unfollowDisplayedUser(displayedUser: User) {
+    await this.handleDisplayedUserFollowUpdate(
+      displayedUser,
+      "Unfollowing",
+      "unfollow user",
+      false,
+      this.service.unfollow.bind(this.service)
+    );
+  }
+
+  protected async handleDisplayedUserFollowUpdate(
+    displayedUser: User,
+    followMessage: string,
+    failMessage: string,
+    followerStatus: boolean,
+    followOperation: (
+      authToken: AuthToken,
+      displayedUser: User
+    ) => Promise<[number, number]>
+  ) {
     this.doFailureReportingOperation(
       async () => {
         this.isLoading = true;
         this.view.displayInfoMessage(
-          `Unfollowing ${displayedUser!.name}...`,
+          `${followMessage} ${displayedUser!.name}...`,
           0
         );
 
-        const [followerCount, followeeCount] = await this.service.unfollow(
+        const [followerCount, followeeCount] = await followOperation(
           this.authToken!!,
           displayedUser!
         );
 
-        this.isFollower = false;
+        this.isFollower = followerStatus;
         this.followerCount = followerCount;
         this.followeeCount = followeeCount;
       },
-      "unfollow user",
+      failMessage,
       () => this.finallyClearInfoMessage()
     );
   }
