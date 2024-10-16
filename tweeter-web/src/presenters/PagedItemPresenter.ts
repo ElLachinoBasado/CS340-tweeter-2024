@@ -10,11 +10,9 @@ export interface PagedItemView<I> extends View {
 // V should be a view
 // I should be an item
 // S should be a service
-export abstract class PagedItemPresenter<
-  V extends View,
-  I,
-  S
-> extends Presenter<PagedItemView<I>> {
+export abstract class PagedItemPresenter<I, S> extends Presenter<
+  PagedItemView<I>
+> {
   private _hasMoreItems = true;
   private _lastItem: I | null = null;
   private _service: S;
@@ -34,16 +32,16 @@ export abstract class PagedItemPresenter<
     return this._lastItem;
   }
 
+  protected set lastItem(value: I | null) {
+    this._lastItem = value;
+  }
+
   public get hasMoreItems() {
     return this._hasMoreItems;
   }
 
   protected set hasMoreItems(value: boolean) {
     this._hasMoreItems = value;
-  }
-
-  protected set lastItem(value: I | null) {
-    this._lastItem = value;
   }
 
   public reset() {

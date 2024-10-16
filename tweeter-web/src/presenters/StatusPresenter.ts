@@ -8,7 +8,6 @@ export interface StatusView extends View {
 }
 
 export abstract class StatusPresenter extends PagedItemPresenter<
-  StatusView,
   Status,
   StatusService
 > {

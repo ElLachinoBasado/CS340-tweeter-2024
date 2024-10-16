@@ -8,7 +8,6 @@ export interface UserItemView extends View {
 }
 
 export abstract class UserItemPresenter extends PagedItemPresenter<
-  UserItemView,
   User,
   FollowService
 > {
