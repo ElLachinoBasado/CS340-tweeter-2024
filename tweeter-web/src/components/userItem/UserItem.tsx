@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { useUserNavigation } from "../userInfo/UserNavigationHook";
 
 interface Props {
-  value: User;
+  user: User;
+  children?: React.ReactNode;
 }
 
-const UserItem = (props: Props) => {
+export const UserItem = (props: Props) => {
   const { navigateToUser } = useUserNavigation();
 
   return (
@@ -15,7 +16,7 @@ const UserItem = (props: Props) => {
         <div className="row mx-0 px-0">
           <div className="col-auto p-3">
             <img
-              src={props.value.imageUrl}
+              src={props.user.imageUrl}
               className="img-fluid"
               width="80"
               alt="Posting user"
@@ -24,16 +25,17 @@ const UserItem = (props: Props) => {
           <div className="col">
             <h2>
               <b>
-                {props.value.firstName} {props.value.lastName}
+                {props.user.firstName} {props.user.lastName}
               </b>{" "}
               -{" "}
               <Link
-                to={props.value.alias}
+                to={props.user.alias}
                 onClick={(event) => navigateToUser(event)}
               >
-                {props.value.alias}
+                {props.user.alias}
               </Link>
             </h2>
+            {props.children}
           </div>
         </div>
       </div>
@@ -41,4 +43,4 @@ const UserItem = (props: Props) => {
   );
 };
 
-export default UserItem;
+
