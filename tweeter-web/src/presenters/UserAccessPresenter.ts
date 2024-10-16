@@ -1,7 +1,7 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { NavigateFunction } from "react-router-dom";
-import { Presenter, View } from "./Presenter";
+import { View } from "./Presenter";
 import { IsLoadingPresenter } from "./IsLoadingPresenter";
 
 export interface UserAccessView extends View {

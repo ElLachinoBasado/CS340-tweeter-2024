@@ -4,10 +4,11 @@ import { Status } from "tweeter-shared";
 import { StatusItem } from "../statusItem/StatusItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "../userInfo/UserInfoHook";
-import { StatusPresenter, StatusView } from "../../presenters/StatusPresenter";
+import { StatusPresenter } from "../../presenters/StatusPresenter";
+import { PagedItemView } from "../../presenters/PagedItemPresenter";
 
 interface Props {
-  presenterGenerator: (view: StatusView) => StatusPresenter;
+  presenterGenerator: (view: PagedItemView<Status>) => StatusPresenter;
 }
 
 export const StatusItemScroller = (props: Props) => {
@@ -46,7 +47,7 @@ export const StatusItemScroller = (props: Props) => {
     setChangedDisplayedUser(false);
   };
 
-  const listener: StatusView = {
+  const listener: PagedItemView<Status> = {
     addItems: (newItems: Status[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };

@@ -5,12 +5,12 @@ import UserItem from "../userItem/UserItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "../userInfo/UserInfoHook";
 import {
-  UserItemPresenter,
-  UserItemView,
+  UserItemPresenter  
 } from "../../presenters/UserItemPresenter";
+import { PagedItemView } from "../../presenters/PagedItemPresenter";
 
 interface Props {
-  presenterGenerator: (view: UserItemView) => UserItemPresenter;
+  presenterGenerator: (view: PagedItemView<User>) => UserItemPresenter;
 }
 
 const UserItemScroller = (props: Props) => {
@@ -52,7 +52,7 @@ const UserItemScroller = (props: Props) => {
     setChangedDisplayedUser(false);
   };
 
-  const listener: UserItemView = {
+  const listener: PagedItemView<User> = {
     addItems: (newItems: User[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };
