@@ -5,9 +5,9 @@ import { User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "./UserInfoHook";
 import {
-  UserInfoPresenter,
-  UserInfoView,
+  UserInfoPresenter,  
 } from "../../presenters/UserInfoPresenter";
+import { InfoMessageView } from "../../presenters/Presenter";
 
 const UserInfo = () => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
@@ -56,7 +56,7 @@ const UserInfo = () => {
     presenter.unfollowDisplayedUser(event, displayedUser!);
   };
 
-  const listener: UserInfoView = {
+  const listener: InfoMessageView = {
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,

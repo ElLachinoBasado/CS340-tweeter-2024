@@ -1,15 +1,10 @@
 import { AuthToken, User } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
-import { View } from "./Presenter";
+import { InfoMessageView } from "./Presenter";
 import { IsLoadingPresenter } from "./IsLoadingPresenter";
 
-export interface UserInfoView extends View {
-  displayInfoMessage(message: string, duration: number): void;
-  clearLastInfoMessage(): void;
-}
-
 export class UserInfoPresenter extends IsLoadingPresenter<
-  UserInfoView,
+  InfoMessageView,
   FollowService
 > {
   private currentUser: User;
@@ -19,7 +14,7 @@ export class UserInfoPresenter extends IsLoadingPresenter<
   private _followerCount: number;
 
   public constructor(
-    view: UserInfoView,
+    view: InfoMessageView,
     currentUser: User,
     authToken: AuthToken
   ) {
