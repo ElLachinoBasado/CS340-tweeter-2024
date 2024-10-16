@@ -11,7 +11,7 @@ interface Props {
   presenterGenerator: (view: PagedItemView<User>) => UserItemPresenter;
 }
 
-const UserItemScroller = (props: Props) => {
+export const UserItemScroller = (props: Props) => {
   return (
     <ItemScroller<User, FollowService, UserItemPresenter>
       presenterGenerator={props.presenterGenerator}
@@ -19,5 +19,3 @@ const UserItemScroller = (props: Props) => {
     />
   );
 };
-
-export default UserItemScroller;
