@@ -1,6 +1,5 @@
 import { AuthToken, User } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
-import { IsLoadingPresenter } from "./IsLoadingPresenter";
 import { InfoMessagePresenter, InfoMessageView } from "./InfoMessagePresenter";
 
 export class UserInfoPresenter extends InfoMessagePresenter<
