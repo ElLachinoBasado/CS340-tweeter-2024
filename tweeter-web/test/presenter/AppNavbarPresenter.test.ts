@@ -2,7 +2,7 @@ import { AuthToken } from "tweeter-shared";
 import {
   AppNavbarPresenter,
   AppNavbarView,
-} from "../src/presenters/AppNavbarPresenter";
+} from "../../src/presenters/AppNavbarPresenter";
 import {
   anything,
   capture,
@@ -12,7 +12,7 @@ import {
   verify,
   when,
 } from "ts-mockito";
-import { UserService } from "../src/model/service/UserService";
+import { UserService } from "../../src/model/service/UserService";
 
 describe("AppNavbarPresenter", () => {
   let mockAppNavbarPresenterView: AppNavbarView;
