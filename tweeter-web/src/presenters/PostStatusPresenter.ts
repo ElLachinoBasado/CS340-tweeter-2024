@@ -1,6 +1,5 @@
 import { AuthToken, Status, User } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
-import { IsLoadingPresenter } from "./IsLoadingPresenter";
 import { InfoMessagePresenter, InfoMessageView } from "./InfoMessagePresenter";
 
 export interface PostStatusView extends InfoMessageView {

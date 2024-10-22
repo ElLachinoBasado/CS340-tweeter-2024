@@ -13,6 +13,7 @@ import {
   when,
 } from "ts-mockito";
 import { UserService } from "../src/model/service/UserService";
+
 describe("AppNavbarPresenter", () => {
   let mockAppNavbarPresenterView: AppNavbarView;
   let appNavbarPresenter: AppNavbarPresenter;
