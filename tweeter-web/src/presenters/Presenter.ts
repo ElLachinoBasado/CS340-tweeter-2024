@@ -15,7 +15,7 @@ export abstract class Presenter<V extends View, S> {
     return this._view;
   }
 
-  protected get service() {
+  public get service() {
     return this._service;
   }
 
@@ -28,7 +28,9 @@ export abstract class Presenter<V extends View, S> {
       await operation();
     } catch (error) {
       this.view.displayErrorMessage(
-        `Failed to ${operationDescription} because of exception: ${error}`
+        `Failed to ${operationDescription} because of exception: ${
+          (error as Error).message
+        }`
       );
     } finally {
       if (!!finalOperation) {
