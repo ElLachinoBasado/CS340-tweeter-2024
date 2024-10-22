@@ -15,7 +15,7 @@ export abstract class IsLoadingPresenter<V extends View, S> extends Presenter<
     return this._isLoading;
   }
 
-  protected set isLoading(value: boolean) {
+  public set isLoading(value: boolean) {
     this._isLoading = value;
   }
 }
