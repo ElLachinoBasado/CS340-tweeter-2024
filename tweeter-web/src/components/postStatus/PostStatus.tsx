@@ -8,7 +8,11 @@ import {
   PostStatusView,
 } from "../../presenters/PostStatusPresenter";
 
-const PostStatus = () => {
+interface Props {
+  optionalpresenter?: PostStatusPresenter;
+}
+
+const PostStatus = (props: Props) => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -39,7 +43,9 @@ const PostStatus = () => {
     clearLastInfoMessage: clearLastInfoMessage,
     setPost: setPost,
   };
-  const [presenter] = useState(new PostStatusPresenter(listener));
+  const [presenter] = useState(
+    props.optionalpresenter ?? new PostStatusPresenter(listener)
+  );
 
   return (
     <div className={presenter.isLoading ? "loading" : ""}>
@@ -48,6 +54,7 @@ const PostStatus = () => {
           <textarea
             className="form-control"
             id="postStatusTextArea"
+            aria-label="postField"
             rows={10}
             placeholder="What's on your mind?"
             value={post}
@@ -59,6 +66,7 @@ const PostStatus = () => {
         <div className="form-group">
           <button
             id="postStatusButton"
+            aria-label="postStatusButton"
             className="btn btn-md btn-primary me-1"
             type="button"
             disabled={checkButtonStatus()}
@@ -77,6 +85,7 @@ const PostStatus = () => {
           </button>
           <button
             id="clearStatusButton"
+            aria-label="clearStatusButton"
             className="btn btn-md btn-secondary"
             type="button"
             disabled={checkButtonStatus()}
