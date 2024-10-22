@@ -17,11 +17,11 @@ describe("PostStatusPresenter", () => {
 
   beforeEach(() => {});
 
-  // it("tells the view to display a posting status message", async () => {});
+  it("tells the view to display a posting status message", async () => {});
 
-  //   it("calls postStatus on the status service with the correct status string and auth token", async () => {});
+  it("calls postStatus on the status service with the correct status string and auth token", async () => {});
 
-  //   it("tells the view to clear the last info message, clear the post, and display a status posted message", async () => {});
+  it("tells the view to clear the last info message, clear the post, and display a status posted message", async () => {});
 
-  //   it("tells the view to display an error message and clear the last info message and does not clear the post or display a status posted message", async () => {});
+  it("tells the view to display an error message and clear the last info message and does not clear the post or display a status posted message", async () => {});
 });
