@@ -1,6 +1,19 @@
 BUCKET='cs340-bucket-hjsung'
 LAMBDA_ROLE='arn:aws:iam::283473019739:role/cs340lambda'
 EDIT_LAMBDALIST='
+tweeterFollow | lambda/follow/FollowLambda.handler
+tweeterGetFolloweesCount | lambda/follow/GetFolloweesCountLambda.handler
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+tweeterGetFollowersCount | lambda/follow/GetFollowersCountLambda.handler
+tweeterGetFollowers | lambda/follow/GetFollowersLambda.handler
+tweeterGetIsFollower | lambda/follow/GetIsFollowerLambda.handler
+tweeterUnfollow | lambda/follow/UnfollowLambda.handler
+tweeterGetFeedItems | lambda/status/GetFeedItemsLambda.handler
+tweeterGetStoryItems | lambda/status/GetStoryItemsLambda.handler
+tweeterPostStatus | lambda/status/PostStatusLambda.handler
+tweeterGetUser | lambda/user/GetUserLambda.handler
+tweeterLogin | lambda/user/LoginLambda.handler
+tweeterLogout | lambda/user/LogoutLambda.handler
+tweeterRegister | lambda/user/RegisterLambda.handler
 '
 LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:283473019739:layer:tweeterLambdaLayer:1'
