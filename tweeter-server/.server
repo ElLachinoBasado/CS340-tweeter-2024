@@ -1,0 +1,6 @@
+BUCKET='https://us-west-2.console.aws.amazon.com/s3/buckets/cs340-bucket-hjsung?region=us-west-2'
+LAMBDA_ROLE='arn:aws:iam::283473019739:role/cs340lambda'
+EDIT_LAMBDALIST='
+tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+'
+LAMBDALAYER_ARN='TODO: Enter the ARN of your lambda layer here'
