@@ -1,6 +1,6 @@
-BUCKET='https://us-west-2.console.aws.amazon.com/s3/buckets/cs340-bucket-hjsung?region=us-west-2'
+BUCKET='cs340-bucket-hjsung'
 LAMBDA_ROLE='arn:aws:iam::283473019739:role/cs340lambda'
 EDIT_LAMBDALIST='
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:283473019739:function:tweeterLambdaLayer'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:283473019739:layer:tweeterLambdaLayer:1'
