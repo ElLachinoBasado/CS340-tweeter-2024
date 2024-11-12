@@ -3,4 +3,4 @@ LAMBDA_ROLE='arn:aws:iam::283473019739:role/cs340lambda'
 EDIT_LAMBDALIST='
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
 '
-LAMBDALAYER_ARN='TODO: Enter the ARN of your lambda layer here'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:283473019739:function:tweeterLambdaLayer'
