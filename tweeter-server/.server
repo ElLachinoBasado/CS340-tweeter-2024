@@ -16,4 +16,4 @@ tweeterLogin | lambda/user/LoginLambda.handler
 tweeterLogout | lambda/user/LogoutLambda.handler
 tweeterRegister | lambda/user/RegisterLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:283473019739:layer:tweeterLambdaLayer:2'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:283473019739:layer:tweeterLambdaLayer:3'
