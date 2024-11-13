@@ -1,4 +1,4 @@
-import { AuthToken } from "tweeter-shared";
+import { AuthToken, LogoutRequest } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { Presenter } from "./Presenter";
 import { InfoMessageView } from "./InfoMessagePresenter";
@@ -15,7 +15,10 @@ export class AppNavbarPresenter extends Presenter<AppNavbarView, UserService> {
   public async logout(authToken: AuthToken) {
     this.view.displayInfoMessage("Logging Out...", 0); // This was not originally in the try catch, so I left it out of doFailureReportingOperation.
     this.doFailureReportingOperation(async () => {
-      await this.service.logout(authToken!);
+      const request: LogoutRequest = {
+        token: authToken.token,
+      };
+      await this.service.logout(request);
 
       this.view.clearLastInfoMessage();
       this.view.clearUserInfo();

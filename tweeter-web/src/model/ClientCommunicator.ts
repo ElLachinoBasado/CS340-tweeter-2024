@@ -14,7 +14,6 @@ export class ClientCommunicator {
   ): Promise<RES> {
     if (headers && req) {
       headers.append("Content-type", "application/json");
-      headers.append("Access-Control-Allow-Origin", "*");
     } else if (req) {
       headers = new Headers({
         "Content-type": "application/json",
