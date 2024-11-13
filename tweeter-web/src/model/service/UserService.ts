@@ -1,19 +1,39 @@
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import {
+  AuthToken,
+  FakeData,
+  LoginRequest,
+  LoginResponse,
+  PagedUserItemRequest,
+  PagedUserItemResponse,
+  User,
+} from "tweeter-shared";
 import { Buffer } from "buffer";
+import { ClientCommunicator } from "../ClientCommunicator";
 
 export class UserService {
-  public async login(
-    alias: string,
-    password: string
-  ): Promise<[User, AuthToken]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+  private SERVER_URL =
+    "https://dsmhw19g68.execute-api.us-west-2.amazonaws.com/dev";
 
-    if (user === null) {
+  private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
+
+  public async login(request: LoginRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      LoginRequest,
+      LoginResponse
+    >(request, "/authentication/login");
+
+    if (response.success) {
+      const user = User.fromDto(response.user);
+      const authToken = AuthToken.fromDto(response.token);
+      if (user === null || authToken === null) {
+        throw new Error("User or authToken returned null");
+      } else {
+        return [user, authToken];
+      }
+    } else {
+      console.error(response.message);
       throw new Error("Invalid alias or password");
     }
-
-    return [user, FakeData.instance.authToken];
   }
 
   public async register(

@@ -1,4 +1,4 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, LoginRequest, User } from "tweeter-shared";
 import { UserAccessPresenter, UserAccessView } from "./UserAccessPresenter";
 
 export class LoginPresenter extends UserAccessPresenter {
@@ -13,7 +13,11 @@ export class LoginPresenter extends UserAccessPresenter {
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    return this.service.login(alias, password);
+    const request: LoginRequest = {
+      alias: alias,
+      password: password,
+    };
+    return this.service.login(request);
   }
 
   protected navigateFunction(): void {
