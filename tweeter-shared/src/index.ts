@@ -10,6 +10,9 @@ export type { PostSegmentDTO } from "./model/dto/PostSegmentDTO";
 export type { StatusDTO } from "./model/dto/StatusDTO";
 export type { UserDTO } from "./model/dto/UserDTO";
 
+export type { TweeterRequest } from "./model/net/request/TweeterRequest";
+export type { TweeterResponse } from "./model/net/response/TweeterResponse";
+
 export type { FollowRequest } from "./model/net/request/FollowRequest";
 export type { GetUserRequest } from "./model/net/request/GetUserRequest";
 export type { IsFollowerRequest } from "./model/net/request/IsFollowerRequest";
