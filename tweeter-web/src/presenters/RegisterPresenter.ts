@@ -1,4 +1,4 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, RegisterRequest, User } from "tweeter-shared";
 import { UserAccessPresenter } from "./UserAccessPresenter";
 import { Buffer } from "buffer";
 
@@ -52,14 +52,17 @@ export class RegisterPresenter extends UserAccessPresenter {
     imageBytes: Uint8Array,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
-    return this.service.register(
-      firstName,
-      lastName,
-      alias,
-      password,
-      imageBytes,
-      imageFileExtension
-    );
+    const imageStringBase64: string =
+      Buffer.from(imageBytes).toString("base64");
+    const request: RegisterRequest = {
+      alias: alias,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      userImageBytes: imageStringBase64,
+      imageFileExtension: imageFileExtension,
+    };
+    return this.service.register(request);
   }
 
   protected navigateFunction(): void {

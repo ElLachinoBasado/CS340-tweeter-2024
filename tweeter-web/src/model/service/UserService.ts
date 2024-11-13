@@ -1,12 +1,16 @@
 import {
   AuthToken,
   FakeData,
+  GetUserRequest,
+  GetUserResponse,
   LoginRequest,
   LoginResponse,
   LogoutRequest,
   LogoutResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  RegisterRequest,
+  RegisterResponse,
   User,
 } from "tweeter-shared";
 import { Buffer } from "buffer";
@@ -38,34 +42,39 @@ export class UserService {
     }
   }
 
-  public async register(
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    userImageBytes: Uint8Array,
-    imageFileExtension: string
-  ): Promise<[User, AuthToken]> {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
+  public async register(request: RegisterRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      RegisterResponse
+    >(request, "/authentication/register");
 
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
+    if (response.success) {
+      const user = User.fromDto(response.user);
+      const authToken = AuthToken.fromDto(response.authToken);
+      if (user === null || authToken === null) {
+        throw new Error("Invalid registration");
+      } else {
+        return [user, authToken];
+      }
+    } else {
+      console.error(response.message);
+      throw new Error("Server failed to register");
     }
-
-    return [user, FakeData.instance.authToken];
   }
 
-  public async getUser(
-    authToken: AuthToken,
-    alias: string
-  ): Promise<User | null> {
+  public async getUser(request: GetUserRequest): Promise<User | null> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+    const response = await this.clientCommunicator.doPost<
+      GetUserRequest,
+      GetUserResponse
+    >(request, "/authentication/getUser");
+
+    if (response.success) {
+      return User.fromDto(response.user);
+    } else {
+      console.error(response.message);
+      throw new Error("Failed to get user");
+    }
   }
 
   public async logout(request: LogoutRequest): Promise<void> {

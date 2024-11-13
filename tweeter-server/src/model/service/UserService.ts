@@ -27,12 +27,12 @@ export class UserService {
     lastName: string,
     alias: string,
     password: string,
-    userImageBytes: Uint8Array,
+    userImageBytes: string,
     imageFileExtension: string
   ): Promise<[UserDTO, AuthTokenDTO]> {
     // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
+    // const imageStringBase64: string =
+    //   Buffer.from(userImageBytes).toString("base64");
 
     // TODO: Replace with the result of calling the server
     const user = FakeData.instance.firstUser?.dto;
@@ -44,9 +44,9 @@ export class UserService {
     return [user, FakeData.instance.authToken.dto];
   }
 
-  public async getUser(token: string, alias: string): Promise<User | null> {
+  public async getUser(token: string, alias: string): Promise<UserDTO | null> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+    return FakeData.instance.findUserByAlias(alias)?.dto ?? null;
   }
 
   public async logout(token: string): Promise<void> {

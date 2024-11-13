@@ -1,4 +1,4 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, GetUserRequest, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { Presenter, View } from "./Presenter";
 
@@ -19,7 +19,11 @@ export class UserPresenter extends Presenter<UserView, UserService> {
     this.doFailureReportingOperation(async () => {
       const alias = this.extractAlias(event.target.toString());
 
-      const user = await this.service.getUser(authToken!, alias);
+      const request: GetUserRequest = {
+        token: authToken?.token!,
+        alias: alias,
+      };
+      const user = await this.service.getUser(request);
 
       if (!!user) {
         if (currentUser!.equals(user)) {
