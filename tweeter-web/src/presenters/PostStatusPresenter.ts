@@ -1,4 +1,4 @@
-import { AuthToken, Status, User } from "tweeter-shared";
+import { AuthToken, PostStatusRequest, Status, User } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
 import { InfoMessagePresenter, InfoMessageView } from "./InfoMessagePresenter";
 
@@ -26,7 +26,11 @@ export class PostStatusPresenter extends InfoMessagePresenter<
 
         const status = new Status(post, currentUser!, Date.now());
 
-        await this.service.postStatus(authToken!, status);
+        const request: PostStatusRequest = {
+          token: authToken.token,
+          newStatus: status.dto,
+        };
+        await this.service.postStatus(request);
 
         this.view.setPost("");
         this.view.displayInfoMessage("Status posted!", 2000);
