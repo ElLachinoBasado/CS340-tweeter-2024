@@ -1,84 +1,160 @@
-import { AuthToken, FakeData, User, UserDTO } from "tweeter-shared";
+import {
+  AuthToken,
+  FakeData,
+  FollowRequest,
+  FollowResponse,
+  IsFollowerRequest,
+  IsFollowerResponse,
+  PagedUserItemRequest,
+  PagedUserItemResponse,
+  User,
+  UserDTO,
+  UserItemCountRequest,
+  UserItemCountResponse,
+} from "tweeter-shared";
+import { ClientCommunicator } from "../ClientCommunicator";
 
 export class FollowService {
+  private SERVER_URL =
+    "https://dsmhw19g68.execute-api.us-west-2.amazonaws.com/dev";
+
+  private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
+
   public async loadMoreFollowers(
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: User | null
+    request: PagedUserItemRequest
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    const response = await this.clientCommunicator.doPost<
+      PagedUserItemRequest,
+      PagedUserItemResponse
+    >(request, "/follower/list");
+
+    if (response.success) {
+      if (response.items) {
+        const items = response.items
+          ? response.items
+              .map((item) => User.fromDto(item))
+              .filter((user): user is User => user !== null)
+          : [];
+        return [items, response.hasMore];
+      } else {
+        console.error(response.message);
+        throw new Error("Server failed to load feed items");
+      }
+    } else {
+      console.error(response.message);
+      throw new Error("Server failed to load feed items");
+    }
   }
 
   public async loadMoreFollowees(
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: User | null
+    request: PagedUserItemRequest
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    const response = await this.clientCommunicator.doPost<
+      PagedUserItemRequest,
+      PagedUserItemResponse
+    >(request, "/followee/list");
+
+    if (response.success) {
+      if (response.items) {
+        const items = response.items
+          ? response.items
+              .map((item) => User.fromDto(item))
+              .filter((user): user is User => user !== null)
+          : [];
+        return [items, response.hasMore];
+      } else {
+        console.error(response.message);
+        throw new Error("Server failed to load feed items");
+      }
+    } else {
+      console.error(response.message);
+      throw new Error("Server failed to load feed items");
+    }
   }
 
   public async getFollowerCount(
-    authToken: AuthToken,
-    user: User
+    request: UserItemCountRequest
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    const response = await this.clientCommunicator.doPost<
+      UserItemCountRequest,
+      UserItemCountResponse
+    >(request, "/follower/count");
+
+    if (response.success) {
+      const count = response.count;
+      return count;
+    } else {
+      console.error(response.message);
+      throw new Error("Server failed to get follower count");
+    }
   }
 
   public async getFolloweeCount(
-    authToken: AuthToken,
-    user: User
+    request: UserItemCountRequest
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    const response = await this.clientCommunicator.doPost<
+      UserItemCountRequest,
+      UserItemCountResponse
+    >(request, "/followee/count");
+
+    if (response.success) {
+      const count = response.count;
+      return count;
+    } else {
+      console.error(response.message);
+      throw new Error("Server failed to get followee count");
+    }
   }
 
   public async getIsFollowerStatus(
-    authToken: AuthToken,
-    user: User,
-    selectedUser: User
+    request: IsFollowerRequest
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    const response = await this.clientCommunicator.doPost<
+      IsFollowerRequest,
+      IsFollowerResponse
+    >(request, "/follower/isFollower");
+
+    if (response.success) {
+      return response.isFollower;
+    } else {
+      console.error(response.message);
+      throw new Error("Server failed to get is follower status");
+    }
   }
 
   public async follow(
-    authToken: AuthToken,
-    userToFollow: User
+    request: FollowRequest
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    const response = await this.clientCommunicator.doPost<
+      FollowRequest,
+      FollowResponse
+    >(request, "/userLink/follow");
 
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
-
-    return [followerCount, followeeCount];
+    if (response.success) {
+      const followerCount = response.followerCount;
+      const followeeCount = response.followeeCount;
+      return [followerCount, followeeCount];
+    } else {
+      console.error(response.message);
+      throw new Error("Server failed to follow user");
+    }
   }
 
   public async unfollow(
-    authToken: AuthToken,
-    userToUnfollow: User
+    request: FollowRequest
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    const response = await this.clientCommunicator.doPost<
+      FollowRequest,
+      FollowResponse
+    >(request, "/userLink/unfollow");
 
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(
-      authToken,
-      userToUnfollow
-    );
-    const followeeCount = await this.getFolloweeCount(
-      authToken,
-      userToUnfollow
-    );
-
-    return [followerCount, followeeCount];
+    if (response.success) {
+      const followerCount = response.followerCount;
+      const followeeCount = response.followeeCount;
+      return [followerCount, followeeCount];
+    } else {
+      console.error(response.message);
+      throw new Error("Server failed to unfollow user");
+    }
   }
 }

@@ -1,4 +1,10 @@
-import { AuthToken, User } from "tweeter-shared";
+import {
+  AuthToken,
+  FollowRequest,
+  IsFollowerRequest,
+  User,
+  UserItemCountRequest,
+} from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
 import { InfoMessagePresenter, InfoMessageView } from "./InfoMessagePresenter";
 
@@ -30,30 +36,33 @@ export class UserInfoPresenter extends InfoMessagePresenter<
       if (this.currentUser === displayedUser) {
         this.isFollower = true;
       } else {
-        this.isFollower = await this.service.getIsFollowerStatus(
-          this.authToken!,
-          this.currentUser!,
-          displayedUser!
-        );
+        const request: IsFollowerRequest = {
+          token: this.authToken.token,
+          user: this.currentUser.dto,
+          selectedUser: displayedUser.dto,
+        };
+        this.isFollower = await this.service.getIsFollowerStatus(request);
       }
     }, "determine follower status");
   }
 
   public async setNumbFollowees(displayedUser: User) {
     this.doFailureReportingOperation(async () => {
-      this.followeeCount = await this.service.getFolloweeCount(
-        this.authToken!,
-        displayedUser
-      );
+      const request: UserItemCountRequest = {
+        token: this.authToken.token,
+        user: displayedUser.dto,
+      };
+      this.followeeCount = await this.service.getFolloweeCount(request);
     }, "get followees count");
   }
 
   public async setNumbFollowers(displayedUser: User) {
     this.doFailureReportingOperation(async () => {
-      this.followerCount = await this.service.getFollowerCount(
-        this.authToken!,
-        displayedUser
-      );
+      const request: UserItemCountRequest = {
+        token: this.authToken.token,
+        user: displayedUser.dto,
+      };
+      this.followerCount = await this.service.getFollowerCount(request);
     }, "get followers count");
   }
 
@@ -82,10 +91,7 @@ export class UserInfoPresenter extends InfoMessagePresenter<
     followMessage: string,
     failMessage: string,
     followerStatus: boolean,
-    followOperation: (
-      authToken: AuthToken,
-      displayedUser: User
-    ) => Promise<[number, number]>
+    followOperation: (request: FollowRequest) => Promise<[number, number]>
   ) {
     this.doFailureReportingOperation(
       async () => {
@@ -95,10 +101,12 @@ export class UserInfoPresenter extends InfoMessagePresenter<
           0
         );
 
-        const [followerCount, followeeCount] = await followOperation(
-          this.authToken!!,
-          displayedUser!
-        );
+        const request: FollowRequest = {
+          token: this.authToken.token,
+          user: displayedUser.dto,
+        };
+
+        const [followerCount, followeeCount] = await followOperation(request);
 
         this.isFollower = followerStatus;
         this.followerCount = followerCount;
