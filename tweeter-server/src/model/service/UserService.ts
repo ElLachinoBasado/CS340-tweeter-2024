@@ -34,6 +34,16 @@ export class UserService {
     // const imageStringBase64: string =
     //   Buffer.from(userImageBytes).toString("base64");
 
+    console.log(
+      "You reached the register with",
+      firstName,
+      lastName,
+      alias,
+      password,
+      userImageBytes,
+      imageFileExtension
+    );
+
     // TODO: Replace with the result of calling the server
     const user = FakeData.instance.firstUser?.dto;
 
