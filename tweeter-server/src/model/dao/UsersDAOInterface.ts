@@ -10,4 +10,6 @@ export interface UsersDAOInterface extends DAOInterface {
     userImage: string,
     hashedPassword: string
   ): Promise<void>;
+
+  getPassword(client: any, alias: string): Promise<string>;
 }

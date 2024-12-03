@@ -1,6 +1,10 @@
 import { FakeData, UserDTO } from "tweeter-shared";
 import { UsersDAOInterface } from "./UsersDAOInterface";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+} from "@aws-sdk/lib-dynamodb";
 
 export class UsersDAO implements UsersDAOInterface {
   readonly aliasAttribute = "alias";
@@ -41,6 +45,28 @@ export class UsersDAO implements UsersDAOInterface {
       } else {
         throw error;
       }
+    }
+  }
+
+  public async getPassword(client: any, alias: string): Promise<string> {
+    const params = {
+      TableName: this.tableName,
+      Key: {
+        [this.aliasAttribute]: alias,
+      },
+    };
+    try {
+      const output = await client.send(new GetCommand(params));
+      const password = output.Item?.[this.passwordAttribute];
+      if (password === undefined) {
+        throw new Error("Password not found.");
+      }
+      return password;
+    } catch (error) {
+      if (error instanceof Error && error.name === "ItemNotFoundException") {
+        console.error("Item not found.");
+      }
+      throw error;
     }
   }
 }

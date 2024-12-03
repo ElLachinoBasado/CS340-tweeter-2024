@@ -26,14 +26,18 @@ export class UserService {
     alias: string,
     password: string
   ): Promise<[UserDTO, AuthTokenDTO]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser!.dto;
+    const hashedPassword = await this.usersFactory.getPassword(alias);
+    const isPasswordValid = await bcrypt.compare(password, hashedPassword);
 
-    if (user === null) {
+    if (isPasswordValid) {
+      const user = FakeData.instance.firstUser!.dto;
+      if (user === null) {
+        throw new Error("Invalid alias or password");
+      }
+      return [user, FakeData.instance.authToken.dto];
+    } else {
       throw new Error("Invalid alias or password");
     }
-
-    return [user, FakeData.instance.authToken.dto];
   }
 
   public async register(

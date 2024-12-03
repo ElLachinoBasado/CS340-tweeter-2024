@@ -40,4 +40,13 @@ export class UsersFactory extends Factory<UsersDAO> {
       return Promise.reject(error);
     }
   }
+
+  public async getPassword(alias: string): Promise<string> {
+    try {
+      const password = await this.DAO.getPassword(this.client, alias);
+      return password;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }
