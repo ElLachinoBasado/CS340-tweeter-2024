@@ -7,10 +7,34 @@ export class UsersFactory extends Factory<UsersDAO> {
     super();
   }
 
-  public async register(): Promise<UserDTO> {
-    const user = await this.DAO.register(this.client);
+  public async register(
+    alias: string,
+    firstName: string,
+    lastName: string,
+    userImage: string,
+    hashedPassword: string
+  ): Promise<UserDTO> {
+    try {
+      await this.DAO.register(
+        this.client,
+        alias,
+        firstName,
+        lastName,
+        userImage,
+        hashedPassword
+      );
 
-    return user;
+      const userDTO: UserDTO = {
+        alias: alias,
+        firstName: firstName,
+        lastName: lastName,
+        imageUrl: userImage,
+      };
+
+      return userDTO;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   protected createDAO() {

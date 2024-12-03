@@ -7,11 +7,16 @@ import {
 } from "tweeter-shared";
 import { Buffer } from "buffer";
 import { UsersFactory } from "../factory/UsersFactory";
+import { S3DAOFactory } from "../factory/S3DAOFactory";
+import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcryptjs";
 
 export class UserService {
   usersFactory: UsersFactory;
+  s3Factory: S3DAOFactory;
   constructor() {
     this.usersFactory = new UsersFactory();
+    this.s3Factory = new S3DAOFactory();
   }
 
   public async login(
@@ -43,7 +48,17 @@ export class UserService {
     // TODO: Replace with the result of calling the server
     // const user = FakeData.instance.firstUser?.dto;
 
-    const user = await this.usersFactory.register();
+    const fileName = `${alias}-${uuidv4()}.${imageFileExtension}`;
+    const imageURL = await this.s3Factory.uploadImage(fileName, userImageBytes);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await this.usersFactory.register(
+      alias,
+      firstName,
+      lastName,
+      imageURL,
+      hashedPassword
+    );
 
     if (user === null || user == undefined) {
       throw new Error("Invalid registration");
