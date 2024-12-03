@@ -1,3 +1,1 @@
-export class UsersDAO {
-  readonly tableName = "users";
-}
+export class UsersDAO {}
