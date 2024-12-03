@@ -6,8 +6,14 @@ import {
   UserDTO,
 } from "tweeter-shared";
 import { Buffer } from "buffer";
+import { UsersFactory } from "../factory/UsersFactory";
 
 export class UserService {
+  usersFactory: UsersFactory;
+  constructor() {
+    this.usersFactory = new UsersFactory();
+  }
+
   public async login(
     alias: string,
     password: string
@@ -35,7 +41,9 @@ export class UserService {
     //   Buffer.from(userImageBytes).toString("base64");
 
     // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser?.dto;
+    // const user = FakeData.instance.firstUser?.dto;
+
+    const user = await this.usersFactory.register();
 
     if (user === null || user == undefined) {
       throw new Error("Invalid registration");
