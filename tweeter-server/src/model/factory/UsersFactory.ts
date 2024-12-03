@@ -7,6 +7,10 @@ export class UsersFactory extends Factory<UsersDAO> {
     super();
   }
 
+  protected createDAO() {
+    return new UsersDAO();
+  }
+
   public async register(
     alias: string,
     firstName: string,
@@ -35,9 +39,5 @@ export class UsersFactory extends Factory<UsersDAO> {
     } catch (error) {
       return Promise.reject(error);
     }
-  }
-
-  protected createDAO() {
-    return new UsersDAO();
   }
 }

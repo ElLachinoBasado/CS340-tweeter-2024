@@ -10,13 +10,16 @@ import { UsersFactory } from "../factory/UsersFactory";
 import { S3DAOFactory } from "../factory/S3DAOFactory";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
+import { TokensFactory } from "../factory/TokensFactory";
 
 export class UserService {
   usersFactory: UsersFactory;
   s3Factory: S3DAOFactory;
+  tokensFactory: TokensFactory;
   constructor() {
     this.usersFactory = new UsersFactory();
     this.s3Factory = new S3DAOFactory();
+    this.tokensFactory = new TokensFactory();
   }
 
   public async login(
@@ -55,9 +58,14 @@ export class UserService {
 
     if (user === null || user == undefined) {
       throw new Error("Invalid registration");
-    }
+    } else {
+      const token = await this.tokensFactory.createToken(alias);
 
-    return [user, FakeData.instance.authToken.dto];
+      if (token === null || token == undefined) {
+        throw new Error("Token not created");
+      }
+      return [user, token];
+    }
   }
 
   public async getUser(token: string, alias: string): Promise<UserDTO | null> {
