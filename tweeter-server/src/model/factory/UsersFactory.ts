@@ -50,9 +50,18 @@ export class UsersFactory extends Factory<UsersDAO> {
     }
   }
 
-  public async getUser(alias: string): Promise<UserDTO> {
+  public async getUser(alias: string): Promise<UserDTO | null> {
     try {
-      const userDTO = await this.DAO.getUser(this.client, alias);
+      const user = await this.DAO.getUser(this.client, alias);
+      if (!user) {
+        return null;
+      }
+      const userDTO: UserDTO = {
+        alias: user.alias,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        imageUrl: user.imageUrl,
+      };
       return userDTO;
     } catch (error) {
       return Promise.reject(error);

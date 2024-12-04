@@ -70,7 +70,7 @@ export class UsersDAO implements UsersDAOInterface {
     }
   }
 
-  public async getUser(client: any, alias: string): Promise<UserDTO> {
+  public async getUser(client: any, alias: string): Promise<UserDTO | null> {
     const params = {
       TableName: this.tableName,
       Key: {
@@ -79,6 +79,11 @@ export class UsersDAO implements UsersDAOInterface {
     };
     try {
       const output = await client.send(new GetCommand(params));
+      const user = output.Item;
+
+      if (user === undefined) {
+        return null;
+      }
       const userDTO: UserDTO = {
         alias: output.Item?.[this.aliasAttribute],
         firstName: output.Item?.[this.firstNameAttribute],

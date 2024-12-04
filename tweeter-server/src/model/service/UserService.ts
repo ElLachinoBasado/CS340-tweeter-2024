@@ -87,7 +87,7 @@ export class UserService {
       throw new Error("Token expired, login again");
     } else {
       const user = await this.usersFactory.getUser(alias);
-      if (user === null || user == undefined) {
+      if (user === null) {
         throw new Error("User not found");
       }
       return user;
