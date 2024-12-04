@@ -15,7 +15,8 @@ export class TokensFactory extends Factory<TokensDAO> {
   public async createToken(alias: string): Promise<AuthTokenDTO> {
     try {
       const token: string = uuidv4();
-      const timestamp: number = Date.now() + 3600000;
+      const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+      const timestamp: number = Date.now() + 3600000 - timeZoneOffset;
 
       await this.DAO.createToken(this.client, token, timestamp, alias);
 
@@ -25,6 +26,15 @@ export class TokensFactory extends Factory<TokensDAO> {
       };
 
       return tokenDTO;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async checkToken(token: string, alias: string): Promise<boolean> {
+    try {
+      const isExpired = await this.DAO.checkToken(this.client, token, alias);
+      return isExpired;
     } catch (error) {
       return Promise.reject(error);
     }

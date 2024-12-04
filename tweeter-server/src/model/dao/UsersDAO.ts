@@ -69,4 +69,28 @@ export class UsersDAO implements UsersDAOInterface {
       throw error;
     }
   }
+
+  public async getUser(client: any, alias: string): Promise<UserDTO> {
+    const params = {
+      TableName: this.tableName,
+      Key: {
+        [this.aliasAttribute]: alias,
+      },
+    };
+    try {
+      const output = await client.send(new GetCommand(params));
+      const userDTO: UserDTO = {
+        alias: output.Item?.[this.aliasAttribute],
+        firstName: output.Item?.[this.firstNameAttribute],
+        lastName: output.Item?.[this.lastNameAttribute],
+        imageUrl: output.Item?.[this.userImageAttribute],
+      };
+      return userDTO;
+    } catch (error) {
+      if (error instanceof Error && error.name === "ItemNotFoundException") {
+        console.error("Item not found.");
+      }
+      throw error;
+    }
+  }
 }

@@ -8,4 +8,6 @@ export interface TokensDAOInterface extends DAOInterface {
     timestamp: number,
     alias: string
   ): Promise<void>;
+
+  checkToken(client: any, token: string, alias: string): Promise<boolean>;
 }

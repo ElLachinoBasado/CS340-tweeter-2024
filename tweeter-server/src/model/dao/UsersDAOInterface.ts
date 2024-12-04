@@ -12,4 +12,5 @@ export interface UsersDAOInterface extends DAOInterface {
   ): Promise<void>;
 
   getPassword(client: any, alias: string): Promise<string>;
+  getUser(client: any, alias: string): Promise<UserDTO>;
 }

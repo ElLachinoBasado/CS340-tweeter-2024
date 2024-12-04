@@ -1,6 +1,10 @@
 import { AuthTokenDTO } from "tweeter-shared";
 import { TokensDAOInterface } from "./TokensDAOInterface";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+} from "@aws-sdk/lib-dynamodb";
 
 export class TokensDAO implements TokensDAOInterface {
   readonly tokenAttribute: string = "authToken";
@@ -36,5 +40,34 @@ export class TokensDAO implements TokensDAOInterface {
         throw error;
       }
     }
+  }
+
+  public async checkToken(
+    client: any,
+    token: string,
+    alias: string
+  ): Promise<boolean> {
+    const params = {
+      TableName: this.tableName,
+      Key: {
+        [this.tokenAttribute]: token,
+        [this.aliasAttribute]: alias,
+      },
+    };
+    try {
+      const output = await client.send(new GetCommand(params));
+      const timestamp = output.Item?.[this.timestampAttribute];
+      return this.isTimestampExpired(timestamp);
+    } catch (error) {
+      if (error instanceof Error && error.name === "ItemNotFoundException") {
+        console.error("Item not found.");
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  private isTimestampExpired(timestamp: number): boolean {
+    return Date.now() > timestamp;
   }
 }

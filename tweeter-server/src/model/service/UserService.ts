@@ -5,7 +5,6 @@ import {
   User,
   UserDTO,
 } from "tweeter-shared";
-import { Buffer } from "buffer";
 import { UsersFactory } from "../factory/UsersFactory";
 import { S3DAOFactory } from "../factory/S3DAOFactory";
 import { v4 as uuidv4 } from "uuid";
@@ -26,17 +25,26 @@ export class UserService {
     alias: string,
     password: string
   ): Promise<[UserDTO, AuthTokenDTO]> {
-    const hashedPassword = await this.usersFactory.getPassword(alias);
-    const isPasswordValid = await bcrypt.compare(password, hashedPassword);
-
-    if (isPasswordValid) {
-      const user = FakeData.instance.firstUser!.dto;
-      if (user === null) {
+    try {
+      const hashedPassword = await this.usersFactory.getPassword(alias);
+      const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+      if (!isPasswordValid) {
         throw new Error("Invalid alias or password");
       }
-      return [user, FakeData.instance.authToken.dto];
-    } else {
-      throw new Error("Invalid alias or password");
+
+      const newToken = await this.tokensFactory.createToken(alias);
+      if (!newToken) {
+        throw new Error("Token not created");
+      }
+
+      const user = await this.getUser(newToken.token, alias);
+      if (!user) {
+        throw new Error("Could not retrieve user");
+      }
+
+      return [user, newToken];
+    } catch (error) {
+      return Promise.reject(error);
     }
   }
 
@@ -73,8 +81,17 @@ export class UserService {
   }
 
   public async getUser(token: string, alias: string): Promise<UserDTO | null> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias)?.dto ?? null;
+    const isExpired = await this.tokensFactory.checkToken(token, alias);
+
+    if (isExpired) {
+      throw new Error("Token expired, login again");
+    } else {
+      const user = await this.usersFactory.getUser(alias);
+      if (user === null || user == undefined) {
+        throw new Error("User not found");
+      }
+      return user;
+    }
   }
 
   public async logout(token: string): Promise<void> {

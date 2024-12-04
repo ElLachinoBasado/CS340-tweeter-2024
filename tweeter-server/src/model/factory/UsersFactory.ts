@@ -49,4 +49,13 @@ export class UsersFactory extends Factory<UsersDAO> {
       return Promise.reject(error);
     }
   }
+
+  public async getUser(alias: string): Promise<UserDTO> {
+    try {
+      const userDTO = await this.DAO.getUser(this.client, alias);
+      return userDTO;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }
