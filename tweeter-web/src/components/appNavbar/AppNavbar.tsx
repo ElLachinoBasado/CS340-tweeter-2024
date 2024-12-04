@@ -12,12 +12,12 @@ import { useState } from "react";
 
 const AppNavbar = () => {
   const location = useLocation();
-  const { authToken, clearUserInfo } = useUserInfoHook();
+  const { authToken, currentUser, clearUserInfo } = useUserInfoHook();
   const { displayInfoMessage, displayErrorMessage, clearLastInfoMessage } =
     useToastListener();
 
   const logOut = async () => {
-    presenter.logout(authToken!);
+    presenter.logout(authToken!, currentUser!.alias);
   };
 
   const listener: AppNavbarView = {

@@ -10,4 +10,5 @@ export interface TokensDAOInterface extends DAOInterface {
   ): Promise<void>;
 
   checkToken(client: any, token: string, alias: string): Promise<boolean>;
+  deleteToken(client: any, token: string, alias: string): Promise<void>;
 }

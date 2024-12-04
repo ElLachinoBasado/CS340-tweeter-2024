@@ -12,11 +12,12 @@ export class AppNavbarPresenter extends Presenter<AppNavbarView, UserService> {
     super(view);
   }
 
-  public async logout(authToken: AuthToken) {
+  public async logout(authToken: AuthToken, alias: string) {
     this.view.displayInfoMessage("Logging Out...", 0); // This was not originally in the try catch, so I left it out of doFailureReportingOperation.
     this.doFailureReportingOperation(async () => {
       const request: LogoutRequest = {
         token: authToken.token,
+        alias: alias,
       };
       await this.service.logout(request);
 

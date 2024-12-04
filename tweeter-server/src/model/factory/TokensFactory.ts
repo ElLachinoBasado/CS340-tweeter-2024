@@ -39,4 +39,12 @@ export class TokensFactory extends Factory<TokensDAO> {
       return Promise.reject(error);
     }
   }
+
+  public async deleteToken(token: string, alias: string): Promise<void> {
+    try {
+      await this.DAO.deleteToken(this.client, token, alias);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }

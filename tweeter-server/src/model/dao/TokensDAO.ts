@@ -1,6 +1,7 @@
 import { AuthTokenDTO } from "tweeter-shared";
 import { TokensDAOInterface } from "./TokensDAOInterface";
 import {
+  DeleteCommand,
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
@@ -69,5 +70,26 @@ export class TokensDAO implements TokensDAOInterface {
 
   private isTimestampExpired(timestamp: number): boolean {
     return Date.now() > timestamp;
+  }
+
+  public async deleteToken(
+    client: any,
+    token: string,
+    alias: string
+  ): Promise<void> {
+    const params = {
+      TableName: this.tableName,
+      Key: {
+        [this.tokenAttribute]: token,
+        [this.aliasAttribute]: alias,
+      },
+    };
+    try {
+      await client.send(new DeleteCommand(params));
+    } catch (error) {
+      if (error instanceof Error && error.name === "ItemNotFoundException") {
+        console.error("Item not found.");
+      }
+    }
   }
 }
