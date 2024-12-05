@@ -21,20 +21,26 @@ export const ItemScroller = <I, S, P extends PagedItemPresenter<I, S>>(
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<I[]>([]);
   const [newItems, setNewItems] = useState<I[]>([]);
-  const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
+  const [changedDisplayedUser, setChangedDisplayedUser] = useState(false);
 
   const { displayedUser, authToken } = useUserInfoHook();
 
   // Initialize the component whenever the displayed user changes
   useEffect(() => {
-    reset();
+    const initialize = async () => {
+      await reset();
+    };
+    initialize();
   }, [displayedUser]);
 
   // Load initial items whenever the displayed user changes. Done in a separate useEffect hook so the changes from reset will be visible.
   useEffect(() => {
-    if (changedDisplayedUser) {
-      loadMoreItems();
-    }
+    const loadItems = async () => {
+      if (changedDisplayedUser) {
+        await loadMoreItems();
+      }
+    };
+    loadItems();
   }, [changedDisplayedUser]);
 
   // Add new items whenever there are new items to add
@@ -52,7 +58,7 @@ export const ItemScroller = <I, S, P extends PagedItemPresenter<I, S>>(
   };
 
   const loadMoreItems = async () => {
-    presenter.loadMoreItems(authToken!, displayedUser?.dto!);
+    await presenter.loadMoreItems(authToken!, displayedUser?.dto!);
     setChangedDisplayedUser(false);
   };
 

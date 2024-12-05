@@ -53,7 +53,7 @@ export class StoryDAO implements StoryDAOInterface {
     };
     if (lastItem) {
       params.ExclusiveStartKey = {
-        [this.aliasAttribute]: user.alias,
+        [this.aliasAttribute]: lastItem.user.alias,
         [this.timestampAttribute]: lastItem.timestamp,
       };
     }
@@ -61,6 +61,7 @@ export class StoryDAO implements StoryDAOInterface {
     const data = await client.send(new QueryCommand(params));
     const hasMorePages = data.LastEvaluatedKey !== undefined;
     const items: StatusDTO[] = [];
+    console.log("data", data);
     data.Items?.forEach((item) =>
       items.push({
         post: item[this.postAttribute],
