@@ -1,6 +1,14 @@
 import { AuthToken, FakeData, Status, StatusDTO } from "tweeter-shared";
+import { StoryFactory } from "../factory/StoryFactory";
+import { TokensFactory } from "../factory/TokensFactory";
 
 export class StatusService {
+  storyFactory: StoryFactory;
+  tokensFactory: TokensFactory;
+  constructor() {
+    this.storyFactory = new StoryFactory();
+    this.tokensFactory = new TokensFactory();
+  }
   public async loadMoreFeedItems(
     token: string,
     userAlias: string,
@@ -34,9 +42,23 @@ export class StatusService {
   }
 
   public async postStatus(token: string, newStatus: StatusDTO): Promise<void> {
-    // Pause so we can see the logging out message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    try {
+      const isExpired = await this.tokensFactory.checkToken(
+        token,
+        newStatus.user.alias
+      );
 
-    // TODO: Call the server to post the status
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      } else {
+        await this.storyFactory.postStatus(
+          newStatus.post,
+          newStatus.timestamp,
+          newStatus.user.alias
+        );
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 }
