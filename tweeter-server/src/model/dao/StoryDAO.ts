@@ -61,7 +61,6 @@ export class StoryDAO implements StoryDAOInterface {
     const data = await client.send(new QueryCommand(params));
     const hasMorePages = data.LastEvaluatedKey !== undefined;
     const items: StatusDTO[] = [];
-    console.log("data", data);
     data.Items?.forEach((item) =>
       items.push({
         post: item[this.postAttribute],

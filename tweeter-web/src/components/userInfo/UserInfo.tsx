@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 import { User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "./UserInfoHook";
-import {
-  UserInfoPresenter,  
-} from "../../presenters/UserInfoPresenter";
+import { UserInfoPresenter } from "../../presenters/UserInfoPresenter";
 import { InfoMessageView } from "../../presenters/InfoMessagePresenter";
 import { FollowButton } from "./FollowButton";
 
@@ -17,26 +15,34 @@ const UserInfo = () => {
   const { currentUser, authToken, displayedUser, setDisplayedUser } =
     useUserInfoHook();
 
+  const [followeeCount, setFolloweeCount] = useState<number>(-1);
+  const [followerCount, setFollowerCount] = useState<number>(-1);
+
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
   }
 
   useEffect(() => {
-    setIsFollowerStatus(displayedUser!);
-    setNumbFollowees(displayedUser!);
-    setNumbFollowers(displayedUser!);
+    async function fetchData() {
+      if (displayedUser) {
+        await setIsFollowerStatus(displayedUser);
+        await setNumbFollowees(displayedUser);
+        await setNumbFollowers(displayedUser);
+      }
+    }
+    fetchData();
   }, [displayedUser]);
 
   const setIsFollowerStatus = async (displayedUser: User) => {
-    presenter.setIsFollowerStatus(displayedUser);
+    await presenter.setIsFollowerStatus(displayedUser);
   };
 
   const setNumbFollowees = async (displayedUser: User) => {
-    presenter.setNumbFollowees(displayedUser);
+    await presenter.setNumbFollowees(displayedUser, setFolloweeCount);
   };
 
   const setNumbFollowers = async (displayedUser: User) => {
-    presenter.setNumbFollowers(displayedUser);
+    await presenter.setNumbFollowers(displayedUser, setFollowerCount);
   };
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
@@ -48,7 +54,7 @@ const UserInfo = () => {
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.followDisplayedUser( displayedUser!);
+    presenter.followDisplayedUser(displayedUser!);
   };
 
   const unfollowDisplayedUser = async (
@@ -99,18 +105,19 @@ const UserInfo = () => {
               </h2>
               <h3>{displayedUser.alias}</h3>
               <br />
-              {presenter.followeeCount > -1 && presenter.followerCount > -1 && (
+              {followeeCount > -1 && followerCount > -1 && (
                 <div>
-                  Followees: {presenter.followeeCount} Followers:{" "}
-                  {presenter.followerCount}
+                  Followees: {followeeCount} Followers: {followerCount}
                 </div>
               )}
             </div>
             <form>
-            {displayedUser !== currentUser && (
+              {displayedUser !== currentUser && (
                 <div className="form-group">
                   <FollowButton
-                    id={presenter.isFollower ? "unFollowButton" : "followButton"}
+                    id={
+                      presenter.isFollower ? "unFollowButton" : "followButton"
+                    }
                     className={`btn btn-md ${
                       presenter.isFollower ? "btn-secondary" : "btn-primary"
                     } me-1`}

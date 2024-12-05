@@ -46,23 +46,33 @@ export class UserInfoPresenter extends InfoMessagePresenter<
     }, "determine follower status");
   }
 
-  public async setNumbFollowees(displayedUser: User) {
+  public async setNumbFollowees(
+    displayedUser: User,
+    setFolloweeCount: (count: number) => void
+  ) {
     this.doFailureReportingOperation(async () => {
       const request: UserItemCountRequest = {
         token: this.authToken.token,
         user: displayedUser.dto,
       };
-      this.followeeCount = await this.service.getFolloweeCount(request);
+      const count = await this.service.getFolloweeCount(request);
+      this.followeeCount = count;
+      setFolloweeCount(count);
     }, "get followees count");
   }
 
-  public async setNumbFollowers(displayedUser: User) {
+  public async setNumbFollowers(
+    displayedUser: User,
+    setFollowerCount: (count: number) => void
+  ) {
     this.doFailureReportingOperation(async () => {
       const request: UserItemCountRequest = {
         token: this.authToken.token,
         user: displayedUser.dto,
       };
-      this.followerCount = await this.service.getFollowerCount(request);
+      const count = await this.service.getFollowerCount(request);
+      this.followerCount = count;
+      setFollowerCount(count);
     }, "get followers count");
   }
 

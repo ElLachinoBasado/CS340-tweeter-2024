@@ -1,6 +1,15 @@
 import { AuthToken, FakeData, User, UserDTO } from "tweeter-shared";
+import { TokensFactory } from "../factory/TokensFactory";
+import { FollowFactory } from "../factory/FollowFactory";
 
 export class FollowService {
+  followFactory: FollowFactory;
+  tokensFactory: TokensFactory;
+  constructor() {
+    this.followFactory = new FollowFactory();
+    this.tokensFactory = new TokensFactory();
+  }
+
   public async loadMoreFollowers(
     token: string,
     user: UserDTO,
@@ -36,13 +45,35 @@ export class FollowService {
   }
 
   public async getFollowerCount(token: string, user: UserDTO): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
+
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      }
+      const followerCount = await this.followFactory.getFollowerCount(
+        user.alias
+      );
+      return followerCount;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   public async getFolloweeCount(token: string, user: UserDTO): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
+
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      }
+      const followeeCount = await this.followFactory.getFolloweeCount(
+        user.alias
+      );
+      return followeeCount;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   public async getIsFollowerStatus(
@@ -50,8 +81,20 @@ export class FollowService {
     user: UserDTO,
     selectedUser: UserDTO
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
+
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      }
+      const isFollower = await this.followFactory.getIsFollower(
+        user.alias,
+        selectedUser.alias
+      );
+      return isFollower;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   public async follow(
