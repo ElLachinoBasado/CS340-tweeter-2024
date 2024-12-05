@@ -3,7 +3,7 @@ import { TweeterRequest } from "./TweeterRequest";
 
 export interface PagedUserItemRequest extends TweeterRequest {
   readonly token: string;
-  readonly userAlias: string;
+  readonly user: UserDTO;
   readonly pageSize: number;
   readonly lastItem: UserDTO | null;
 }

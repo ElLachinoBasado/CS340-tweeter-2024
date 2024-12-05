@@ -1,4 +1,10 @@
-import { AuthToken, FakeData, Status, StatusDTO } from "tweeter-shared";
+import {
+  AuthToken,
+  FakeData,
+  Status,
+  StatusDTO,
+  UserDTO,
+} from "tweeter-shared";
 import { StoryFactory } from "../factory/StoryFactory";
 import { TokensFactory } from "../factory/TokensFactory";
 
@@ -11,7 +17,7 @@ export class StatusService {
   }
   public async loadMoreFeedItems(
     token: string,
-    userAlias: string,
+    user: UserDTO,
     pageSize: number,
     lastItem: StatusDTO | null
   ): Promise<[StatusDTO[], boolean]> {
@@ -21,12 +27,26 @@ export class StatusService {
 
   public async loadMoreStoryItems(
     token: string,
-    userAlias: string,
+    user: UserDTO,
     pageSize: number,
     lastItem: StatusDTO | null
   ): Promise<[StatusDTO[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeStatusesData(lastItem, pageSize);
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
+
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      } else {
+        const [items, hasMore] = await this.storyFactory.getStories(
+          user,
+          pageSize,
+          lastItem
+        );
+        return [items, hasMore];
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   private async getFakeStatusesData(

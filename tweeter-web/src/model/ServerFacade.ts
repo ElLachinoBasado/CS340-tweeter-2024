@@ -144,11 +144,11 @@ export class ServerFacade {
         return [items, response.hasMore];
       } else {
         console.error(response.message);
-        throw new Error("Server failed to load feed items");
+        throw new Error("Server failed to load story items");
       }
     } else {
       console.error(response.message);
-      throw new Error("Server failed to load feed items");
+      throw new Error("Server failed to load story items");
     }
   }
 

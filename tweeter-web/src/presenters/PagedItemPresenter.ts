@@ -1,4 +1,4 @@
-import { AuthToken } from "tweeter-shared";
+import { AuthToken, UserDTO } from "tweeter-shared";
 import { Presenter, View } from "./Presenter";
 
 export const PAGE_SIZE = 10;
@@ -41,9 +41,9 @@ export abstract class PagedItemPresenter<I, S> extends Presenter<
     this._hasMoreItems = true;
   }
 
-  public async loadMoreItems(authToken: AuthToken, userAlias: string) {
+  public async loadMoreItems(authToken: AuthToken, user: UserDTO) {
     this.doFailureReportingOperation(async () => {
-      const [newItems, hasMore] = await this.getMoreItems(authToken, userAlias);
+      const [newItems, hasMore] = await this.getMoreItems(authToken, user);
 
       this.hasMoreItems = hasMore;
       this.lastItem = newItems[newItems.length - 1];
@@ -53,7 +53,7 @@ export abstract class PagedItemPresenter<I, S> extends Presenter<
 
   protected abstract getMoreItems(
     authToken: AuthToken,
-    userAlias: string
+    user: UserDTO
   ): Promise<[I[], boolean]>;
 
   protected abstract getItemDescription(): string;

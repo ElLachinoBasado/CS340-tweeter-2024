@@ -10,7 +10,7 @@ export const handler = async (
   const followService = new FollowService();
   const [items, hasMore] = await followService.loadMoreFollowees(
     request.token,
-    request.userAlias,
+    request.user,
     request.pageSize,
     request.lastItem
   );

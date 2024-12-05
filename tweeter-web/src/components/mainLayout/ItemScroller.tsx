@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { PagedItemPresenter, PagedItemView } from "../../presenters/PagedItemPresenter";
+import {
+  PagedItemPresenter,
+  PagedItemView,
+} from "../../presenters/PagedItemPresenter";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "../userInfo/UserInfoHook";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -12,7 +15,9 @@ interface Props<I, S, P extends PagedItemPresenter<I, S>> {
   renderItem: (item: I) => React.ReactNode;
 }
 
-export const ItemScroller = <I,S,P extends PagedItemPresenter<I, S>>(props: Props<I, S, P>) => {
+export const ItemScroller = <I, S, P extends PagedItemPresenter<I, S>>(
+  props: Props<I, S, P>
+) => {
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<I[]>([]);
   const [newItems, setNewItems] = useState<I[]>([]);
@@ -47,7 +52,7 @@ export const ItemScroller = <I,S,P extends PagedItemPresenter<I, S>>(props: Prop
   };
 
   const loadMoreItems = async () => {
-    presenter.loadMoreItems(authToken!, displayedUser!.alias);
+    presenter.loadMoreItems(authToken!, displayedUser?.dto!);
     setChangedDisplayedUser(false);
   };
 
@@ -55,27 +60,27 @@ export const ItemScroller = <I,S,P extends PagedItemPresenter<I, S>>(props: Prop
     addItems: (newItems: I[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };
-  
+
   const [presenter] = useState(props.presenterGenerator(listener));
 
   return (
     <div className="container px-0 overflow-visible vh-100">
-    <InfiniteScroll
-      className="pr-0 mr-0"
-      dataLength={items.length}
-      next={loadMoreItems}
-      hasMore={presenter.hasMoreItems}
-      loader={<h4>Loading...</h4>}
-    >
-      {items.map((item, index) => (
-        <div
-          key={index}
-          className="row mb-3 mx-0 px-0 border rounded bg-white"
-        >          
-          {props.renderItem(item)}
-        </div>
-      ))}
-    </InfiniteScroll>
-  </div>
+      <InfiniteScroll
+        className="pr-0 mr-0"
+        dataLength={items.length}
+        next={loadMoreItems}
+        hasMore={presenter.hasMoreItems}
+        loader={<h4>Loading...</h4>}
+      >
+        {items.map((item, index) => (
+          <div
+            key={index}
+            className="row mb-3 mx-0 px-0 border rounded bg-white"
+          >
+            {props.renderItem(item)}
+          </div>
+        ))}
+      </InfiniteScroll>
+    </div>
   );
-}
+};

@@ -3,22 +3,22 @@ import { AuthToken, FakeData, User, UserDTO } from "tweeter-shared";
 export class FollowService {
   public async loadMoreFollowers(
     token: string,
-    userAlias: string,
+    user: UserDTO,
     pageSize: number,
     lastItem: UserDTO | null
   ): Promise<[UserDTO[], boolean]> {
     // TODO: Replace with the result of calling server
-    return this.getFakeUsersData(lastItem, pageSize, userAlias);
+    return this.getFakeUsersData(lastItem, pageSize, user.alias);
   }
 
   public async loadMoreFollowees(
     token: string,
-    userAlias: string,
+    user: UserDTO,
     pageSize: number,
     lastItem: UserDTO | null
   ): Promise<[UserDTO[], boolean]> {
     // TODO: Replace with the result of calling server
-    return this.getFakeUsersData(lastItem, pageSize, userAlias);
+    return this.getFakeUsersData(lastItem, pageSize, user.alias);
   }
 
   private async getFakeUsersData(

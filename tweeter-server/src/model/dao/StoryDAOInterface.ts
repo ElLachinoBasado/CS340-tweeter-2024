@@ -1,3 +1,4 @@
+import { StatusDTO, UserDTO } from "tweeter-shared";
 import { DAOInterface } from "./DAOInterface";
 
 export interface StoryDAOInterface extends DAOInterface {
@@ -7,4 +8,11 @@ export interface StoryDAOInterface extends DAOInterface {
     timestamp: number,
     alias: string
   ): Promise<void>;
+
+  getStories(
+    client: any,
+    user: UserDTO,
+    pageSize: number,
+    lastItem: StatusDTO | null
+  ): Promise<[StatusDTO[], boolean]>;
 }
