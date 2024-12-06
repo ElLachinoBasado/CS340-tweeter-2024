@@ -8,4 +8,5 @@ export interface FollowsDAOInterface extends DAOInterface {
   ): Promise<boolean>;
 
   getFolloweeCount(client: any, follower_handle: string): Promise<number>;
+  getFollowerCount(client: any, followee_handle: string): Promise<number>;
 }
