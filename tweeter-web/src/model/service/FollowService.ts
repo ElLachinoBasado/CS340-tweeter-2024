@@ -41,10 +41,16 @@ export class FollowService {
   }
 
   public async follow(request: FollowRequest): Promise<[number, number]> {
-    return this.serverFacade.follow(request);
+    const [followeeCount, followerCount] = await this.serverFacade.follow(
+      request
+    );
+    return [followerCount, followeeCount];
   }
 
   public async unfollow(request: FollowRequest): Promise<[number, number]> {
-    return this.serverFacade.unfollow(request);
+    const [followeeCount, followerCount] = await this.serverFacade.unfollow(
+      request
+    );
+    return [followerCount, followeeCount];
   }
 }

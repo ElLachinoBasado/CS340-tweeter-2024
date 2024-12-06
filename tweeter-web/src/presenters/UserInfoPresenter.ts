@@ -78,23 +78,41 @@ export class UserInfoPresenter extends InfoMessagePresenter<
     }, "get followers count");
   }
 
-  public async followDisplayedUser(displayedUser: User) {
+  public async followDisplayedUser(
+    displayedUser: User,
+    isFollower: boolean,
+    setFollowerCount: (count: number) => void,
+    setFolloweeCount: (count: number) => void,
+    setIsFollower: (isFollower: boolean) => void
+  ) {
     await this.handleDisplayedUserFollowUpdate(
       displayedUser,
       "Following",
       "follow user",
-      true,
-      this.service.follow.bind(this.service)
+      isFollower,
+      this.service.follow.bind(this.service),
+      setFollowerCount,
+      setFolloweeCount,
+      setIsFollower
     );
   }
 
-  public async unfollowDisplayedUser(displayedUser: User) {
+  public async unfollowDisplayedUser(
+    displayedUser: User,
+    isFollower: boolean,
+    setFollowerCount: (count: number) => void,
+    setFolloweeCount: (count: number) => void,
+    setIsFollower: (isFollower: boolean) => void
+  ) {
     await this.handleDisplayedUserFollowUpdate(
       displayedUser,
       "Unfollowing",
       "unfollow user",
-      false,
-      this.service.unfollow.bind(this.service)
+      isFollower,
+      this.service.unfollow.bind(this.service),
+      setFollowerCount,
+      setFolloweeCount,
+      setIsFollower
     );
   }
 
@@ -103,7 +121,10 @@ export class UserInfoPresenter extends InfoMessagePresenter<
     followMessage: string,
     failMessage: string,
     followerStatus: boolean,
-    followOperation: (request: FollowRequest) => Promise<[number, number]>
+    followOperation: (request: FollowRequest) => Promise<[number, number]>,
+    setFollowerCount: (count: number) => void,
+    setFolloweeCount: (count: number) => void,
+    setIsFollower: (isFollower: boolean) => void
   ) {
     this.doFailureReportingOperation(
       async () => {
@@ -115,13 +136,15 @@ export class UserInfoPresenter extends InfoMessagePresenter<
 
         const request: FollowRequest = {
           token: this.authToken.token,
-          user: displayedUser.dto,
+          firstUser: this.currentUser.dto,
+          secondUser: displayedUser.dto,
         };
 
         const [followerCount, followeeCount] = await followOperation(request);
 
-        this.followerCount = followerCount;
-        this.followeeCount = followeeCount;
+        setFollowerCount(followerCount);
+        setFolloweeCount(followeeCount);
+        setIsFollower(!followerStatus);
       },
       failMessage,
       () => this.finallyClearInfoMessage()

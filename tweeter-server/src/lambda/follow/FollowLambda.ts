@@ -5,9 +5,10 @@ export const handler = async (
   request: FollowRequest
 ): Promise<FollowResponse> => {
   const followService = new FollowService();
-  const [followerCount, followeeCount] = await followService.unfollow(
+  const [followerCount, followeeCount] = await followService.follow(
     request.token,
-    request.user
+    request.firstUser,
+    request.secondUser
   );
   return {
     success: true,

@@ -55,14 +55,26 @@ const UserInfo = () => {
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.followDisplayedUser(displayedUser!);
+    presenter.followDisplayedUser(
+      displayedUser!,
+      isFollower,
+      setFollowerCount,
+      setFolloweeCount,
+      setIsFollower
+    );
   };
 
   const unfollowDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.unfollowDisplayedUser(displayedUser!);
+    presenter.unfollowDisplayedUser(
+      displayedUser!,
+      isFollower,
+      setFollowerCount,
+      setFolloweeCount,
+      setIsFollower
+    );
   };
 
   const listener: InfoMessageView = {

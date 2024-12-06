@@ -7,7 +7,8 @@ export const handler = async (
   const followService = new FollowService();
   const [followerCount, followeeCount] = await followService.unfollow(
     request.token,
-    request.user
+    request.firstUser,
+    request.secondUser
   );
   return {
     success: true,

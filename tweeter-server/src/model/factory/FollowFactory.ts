@@ -1,3 +1,4 @@
+import { UserDTO } from "tweeter-shared";
 import { FollowsDAO } from "../dao/FollowsDAO";
 import { Factory } from "./Factory";
 
@@ -45,6 +46,22 @@ export class FollowFactory extends Factory<FollowsDAO> {
         followee_handle
       );
       return followerCount;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async follow(user: UserDTO, userToFollow: UserDTO) {
+    try {
+      await this.DAO.follow(this.client, user, userToFollow);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async unfollow(user: UserDTO, userToFollow: UserDTO) {
+    try {
+      await this.DAO.unfollow(this.client, user, userToFollow);
     } catch (error) {
       return Promise.reject(error);
     }

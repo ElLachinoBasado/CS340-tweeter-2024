@@ -16,8 +16,23 @@ export class FollowService {
     pageSize: number,
     lastItem: UserDTO | null
   ): Promise<[UserDTO[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeUsersData(lastItem, pageSize, user.alias);
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
+
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      } else {
+        // const [items, hasMore] = await this.followFactory.getFollowers(
+        //   user,
+        //   pageSize,
+        //   lastItem
+        // );
+        // return [items, hasMore];
+        return this.getFakeUsersData(lastItem, pageSize, user.alias);
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   public async loadMoreFollowees(
@@ -26,8 +41,23 @@ export class FollowService {
     pageSize: number,
     lastItem: UserDTO | null
   ): Promise<[UserDTO[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeUsersData(lastItem, pageSize, user.alias);
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
+
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      } else {
+        // const [items, hasMore] = await this.followFactory.getFollowees(
+        //   user,
+        //   pageSize,
+        //   lastItem
+        // );
+        // return [items, hasMore];
+        return this.getFakeUsersData(lastItem, pageSize, user.alias);
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   private async getFakeUsersData(
@@ -99,31 +129,49 @@ export class FollowService {
 
   public async follow(
     token: string,
+    user: UserDTO,
     userToFollow: UserDTO
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
 
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(token, userToFollow);
-    const followeeCount = await this.getFolloweeCount(token, userToFollow);
-
-    return [followerCount, followeeCount];
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      } else {
+        await this.followFactory.follow(user, userToFollow);
+        const followerCount = await this.getFollowerCount(token, userToFollow);
+        const followeeCount = await this.getFolloweeCount(token, userToFollow);
+        return [followerCount, followeeCount];
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   public async unfollow(
     token: string,
+    user: UserDTO,
     userToUnfollow: UserDTO
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
 
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(token, userToUnfollow);
-    const followeeCount = await this.getFolloweeCount(token, userToUnfollow);
-
-    return [followerCount, followeeCount];
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      } else {
+        await this.followFactory.unfollow(user, userToUnfollow);
+        const followerCount = await this.getFollowerCount(
+          token,
+          userToUnfollow
+        );
+        const followeeCount = await this.getFolloweeCount(
+          token,
+          userToUnfollow
+        );
+        return [followerCount, followeeCount];
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 }
