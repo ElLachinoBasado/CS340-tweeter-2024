@@ -14,7 +14,6 @@ export class UserInfoPresenter extends InfoMessagePresenter<
 > {
   private currentUser: User;
   private authToken: AuthToken;
-  private _isFollower: boolean;
   private _followeeCount: number;
   private _followerCount: number;
 
@@ -26,22 +25,25 @@ export class UserInfoPresenter extends InfoMessagePresenter<
     super(view);
     this.currentUser = currentUser;
     this.authToken = authToken;
-    this._isFollower = false;
     this._followeeCount = -1;
     this._followerCount = -1;
   }
 
-  public async setIsFollowerStatus(displayedUser: User) {
+  public async setIsFollowerStatus(
+    displayedUser: User,
+    setIsFollower: (isFollower: boolean) => void
+  ) {
     this.doFailureReportingOperation(async () => {
       if (this.currentUser === displayedUser) {
-        this.isFollower = true;
+        setIsFollower(true);
       } else {
         const request: IsFollowerRequest = {
           token: this.authToken.token,
           user: this.currentUser.dto,
           selectedUser: displayedUser.dto,
         };
-        this.isFollower = await this.service.getIsFollowerStatus(request);
+        const isFollower = await this.service.getIsFollowerStatus(request);
+        setIsFollower(isFollower);
       }
     }, "determine follower status");
   }
@@ -118,7 +120,6 @@ export class UserInfoPresenter extends InfoMessagePresenter<
 
         const [followerCount, followeeCount] = await followOperation(request);
 
-        this.isFollower = followerStatus;
         this.followerCount = followerCount;
         this.followeeCount = followeeCount;
       },
@@ -129,14 +130,6 @@ export class UserInfoPresenter extends InfoMessagePresenter<
 
   protected createService(): FollowService {
     return new FollowService();
-  }
-
-  public get isFollower() {
-    return this._isFollower;
-  }
-
-  private set isFollower(isFollower: boolean) {
-    this._isFollower = isFollower;
   }
 
   public get followeeCount() {

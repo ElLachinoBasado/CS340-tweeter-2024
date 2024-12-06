@@ -17,6 +17,7 @@ const UserInfo = () => {
 
   const [followeeCount, setFolloweeCount] = useState<number>(-1);
   const [followerCount, setFollowerCount] = useState<number>(-1);
+  const [isFollower, setIsFollower] = useState<boolean>(false);
 
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
@@ -34,7 +35,7 @@ const UserInfo = () => {
   }, [displayedUser]);
 
   const setIsFollowerStatus = async (displayedUser: User) => {
-    await presenter.setIsFollowerStatus(displayedUser);
+    await presenter.setIsFollowerStatus(displayedUser, setIsFollower);
   };
 
   const setNumbFollowees = async (displayedUser: User) => {
@@ -115,19 +116,15 @@ const UserInfo = () => {
               {displayedUser !== currentUser && (
                 <div className="form-group">
                   <FollowButton
-                    id={
-                      presenter.isFollower ? "unFollowButton" : "followButton"
-                    }
+                    id={isFollower ? "unFollowButton" : "followButton"}
                     className={`btn btn-md ${
-                      presenter.isFollower ? "btn-secondary" : "btn-primary"
+                      isFollower ? "btn-secondary" : "btn-primary"
                     } me-1`}
                     onClick={
-                      presenter.isFollower
-                        ? unfollowDisplayedUser
-                        : followDisplayedUser
+                      isFollower ? unfollowDisplayedUser : followDisplayedUser
                     }
                     isLoading={presenter.isLoading}
-                    buttonText={presenter.isFollower ? "Unfollow" : "Follow"}
+                    buttonText={isFollower ? "Unfollow" : "Follow"}
                   />
                 </div>
               )}
