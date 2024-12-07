@@ -125,9 +125,7 @@ export class FollowService {
         await this.followFactory.follow(user, userToFollow);
         const followerCount = await this.getFollowerCount(token, userToFollow);
         const followeeCount = await this.getFolloweeCount(token, userToFollow);
-        console.log(
-          `user: ${user.alias}, userToFollow: ${userToFollow}, service followerCount: ${followerCount}, service followeeCount: ${followeeCount}`
-        );
+
         return [followerCount, followeeCount];
       }
     } catch (error) {
@@ -155,9 +153,7 @@ export class FollowService {
           token,
           userToUnfollow
         );
-        console.log(
-          `user: ${user.alias}, userToUnfollow: ${userToUnfollow.alias}, service followerCount: ${followerCount}, service followeeCount: ${followeeCount}`
-        );
+
         return [followerCount, followeeCount];
       }
     } catch (error) {

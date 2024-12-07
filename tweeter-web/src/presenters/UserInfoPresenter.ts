@@ -143,9 +143,7 @@ export class UserInfoPresenter extends InfoMessagePresenter<
         const counts = await followOperation(request);
         const followerCount = counts[0];
         const followeeCount = counts[1];
-        console.log(
-          `${request.firstUser.alias} is following ${request.secondUser.alias}. Follower count: ${followerCount}, Followee count: ${followeeCount}`
-        );
+
         setFollowerCount(followerCount);
         setFolloweeCount(followeeCount);
         setIsFollower(!followerStatus);

@@ -278,7 +278,6 @@ export class ServerFacade {
     >(request, "/userLink/follow");
 
     if (response.success) {
-      console.log("follow response", response);
       const followerCount = response.followerCount;
       const followeeCount = response.followeeCount;
       return [followerCount, followeeCount];
@@ -297,7 +296,6 @@ export class ServerFacade {
     >(request, "/userLink/unfollow");
 
     if (response.success) {
-      console.log("unfollow response", response);
       const followerCount = response.followerCount;
       const followeeCount = response.followeeCount;
       return [followerCount, followeeCount];
