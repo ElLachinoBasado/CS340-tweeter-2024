@@ -4,6 +4,7 @@ import {
   GetCommand,
   PutCommand,
   QueryCommand,
+  QueryCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import { FollowsDAOInterface } from "./FollowsDAOInterface";
 import { Select } from "@aws-sdk/client-dynamodb";
@@ -19,6 +20,78 @@ export class FollowsDAO implements FollowsDAOInterface {
   readonly followerImageAttribute = "follower_image";
   readonly followeeImageAttribute = "followee_image";
   readonly tableName = "follows";
+
+  public async getFollowers(
+    client: DynamoDBDocumentClient,
+    user: UserDTO,
+    pageSize: number,
+    lastItem: UserDTO | null
+  ): Promise<[UserDTO[], boolean]> {
+    const params: QueryCommandInput = {
+      TableName: this.tableName,
+      IndexName: "followee_handle_index",
+      KeyConditionExpression: `${this.followeeHandleAttribute} = :followee_handle`,
+      ExpressionAttributeValues: {
+        ":followee_handle": user.alias,
+      },
+      Limit: pageSize,
+    };
+    if (lastItem) {
+      params.ExclusiveStartKey = {
+        [this.followerHandleAttribute]: lastItem.alias,
+        [this.followeeHandleAttribute]: user.alias,
+      };
+    }
+
+    const data = await client.send(new QueryCommand(params));
+    const hasMorePages = data.LastEvaluatedKey !== undefined;
+    const items: UserDTO[] = [];
+    data.Items?.forEach((item) =>
+      items.push({
+        alias: item[this.followerHandleAttribute],
+        firstName: item[this.followerFirstNameAttribute],
+        lastName: item[this.followerLastNameAttribute],
+        imageUrl: item[this.followerImageAttribute],
+      })
+    );
+    return [items, hasMorePages];
+  }
+
+  public async getFollowees(
+    client: DynamoDBDocumentClient,
+    user: UserDTO,
+    pageSize: number,
+    lastItem: UserDTO | null
+  ): Promise<[UserDTO[], boolean]> {
+    const params: QueryCommandInput = {
+      TableName: this.tableName,
+      IndexName: "follower_handle_index",
+      KeyConditionExpression: `${this.followerHandleAttribute} = :follower_handle`,
+      ExpressionAttributeValues: {
+        ":follower_handle": user.alias,
+      },
+      Limit: pageSize,
+    };
+    if (lastItem) {
+      params.ExclusiveStartKey = {
+        [this.followerHandleAttribute]: user.alias,
+        [this.followeeHandleAttribute]: lastItem.alias,
+      };
+    }
+
+    const data = await client.send(new QueryCommand(params));
+    const hasMorePages = data.LastEvaluatedKey !== undefined;
+    const items: UserDTO[] = [];
+    data.Items?.forEach((item) =>
+      items.push({
+        alias: item[this.followeeHandleAttribute],
+        firstName: item[this.followeeFirstNameAttribute],
+        lastName: item[this.followeeLastNameAttribute],
+        imageUrl: item[this.followeeImageAttribute],
+      })
+    );
+    return [items, hasMorePages];
+  }
 
   public async follow(
     client: DynamoDBDocumentClient,

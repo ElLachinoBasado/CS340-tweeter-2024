@@ -22,13 +22,12 @@ export class FollowService {
       if (isExpired) {
         throw new Error("Logout and login again");
       } else {
-        // const [items, hasMore] = await this.followFactory.getFollowers(
-        //   user,
-        //   pageSize,
-        //   lastItem
-        // );
-        // return [items, hasMore];
-        return this.getFakeUsersData(lastItem, pageSize, user.alias);
+        const [items, hasMore] = await this.followFactory.getFollowers(
+          user,
+          pageSize,
+          lastItem
+        );
+        return [items, hasMore];
       }
     } catch (error) {
       return Promise.reject(error);
@@ -47,31 +46,16 @@ export class FollowService {
       if (isExpired) {
         throw new Error("Logout and login again");
       } else {
-        // const [items, hasMore] = await this.followFactory.getFollowees(
-        //   user,
-        //   pageSize,
-        //   lastItem
-        // );
-        // return [items, hasMore];
-        return this.getFakeUsersData(lastItem, pageSize, user.alias);
+        const [items, hasMore] = await this.followFactory.getFollowees(
+          user,
+          pageSize,
+          lastItem
+        );
+        return [items, hasMore];
       }
     } catch (error) {
       return Promise.reject(error);
     }
-  }
-
-  private async getFakeUsersData(
-    lastItem: UserDTO | null,
-    pageSize: number,
-    userAlias: string
-  ): Promise<[UserDTO[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfUsers(
-      User.fromDto(lastItem),
-      pageSize,
-      userAlias
-    );
-    const dtos = items.map((user) => user.dto);
-    return [dtos, hasMore];
   }
 
   public async getFollowerCount(token: string, user: UserDTO): Promise<number> {

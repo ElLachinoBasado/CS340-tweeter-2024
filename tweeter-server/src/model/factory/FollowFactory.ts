@@ -11,6 +11,42 @@ export class FollowFactory extends Factory<FollowsDAO> {
     return new FollowsDAO();
   }
 
+  public async getFollowers(
+    user: UserDTO,
+    pageSize: number,
+    lastItem: UserDTO | null
+  ): Promise<[UserDTO[], boolean]> {
+    try {
+      const [items, hasMore] = await this.DAO.getFollowers(
+        this.client,
+        user,
+        pageSize,
+        lastItem
+      );
+      return [items, hasMore];
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async getFollowees(
+    user: UserDTO,
+    pageSize: number,
+    lastItem: UserDTO | null
+  ): Promise<[UserDTO[], boolean]> {
+    try {
+      const [items, hasMore] = await this.DAO.getFollowees(
+        this.client,
+        user,
+        pageSize,
+        lastItem
+      );
+      return [items, hasMore];
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   public async getIsFollower(
     follower_handle: string,
     followee_handle: string
