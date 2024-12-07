@@ -98,8 +98,6 @@ export class FollowsDAO implements FollowsDAOInterface {
     user: UserDTO,
     userToFollow: UserDTO
   ): Promise<void> {
-    console.log("user", user);
-    console.log("userToFollow", userToFollow);
     const params = {
       TableName: this.tableName,
       Item: {
