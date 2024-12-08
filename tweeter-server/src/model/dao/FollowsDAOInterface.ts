@@ -23,4 +23,5 @@ export interface FollowsDAOInterface extends DAOInterface {
     pageSize: number,
     lastItem: UserDTO | null
   ): Promise<[UserDTO[], boolean]>;
+  getAllFollowers(client: any, user: UserDTO): Promise<UserDTO[]>;
 }

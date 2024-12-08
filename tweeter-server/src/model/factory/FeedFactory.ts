@@ -43,6 +43,20 @@ export class FeedFactory extends Factory<FeedDAO> {
     }
   }
 
+  public async addStoryToFollowers(
+    followers: UserDTO[],
+    story: StatusDTO
+  ): Promise<void> {
+    try {
+      const promises = followers.map((follower) =>
+        this.DAO.addStoryToFeed(this.client, follower, story)
+      );
+      await Promise.all(promises);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   public async removeStoriesFromFeed(
     followingUserAlias: string,
     unfollowedUserAlias: string

@@ -29,6 +29,15 @@ export class FollowFactory extends Factory<FollowsDAO> {
     }
   }
 
+  public async getAllFollowers(user: UserDTO): Promise<UserDTO[]> {
+    try {
+      const items = await this.DAO.getAllFollowers(this.client, user);
+      return items;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   public async getFollowees(
     user: UserDTO,
     pageSize: number,

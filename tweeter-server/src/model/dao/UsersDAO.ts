@@ -48,7 +48,10 @@ export class UsersDAO implements UsersDAOInterface {
     }
   }
 
-  public async getPassword(client: any, alias: string): Promise<string> {
+  public async getPassword(
+    client: DynamoDBDocumentClient,
+    alias: string
+  ): Promise<string> {
     const params = {
       TableName: this.tableName,
       Key: {
@@ -70,7 +73,10 @@ export class UsersDAO implements UsersDAOInterface {
     }
   }
 
-  public async getUser(client: any, alias: string): Promise<UserDTO | null> {
+  public async getUser(
+    client: DynamoDBDocumentClient,
+    alias: string
+  ): Promise<UserDTO | null> {
     const params = {
       TableName: this.tableName,
       Key: {

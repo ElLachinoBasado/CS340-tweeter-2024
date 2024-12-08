@@ -24,7 +24,7 @@ export class StoryDAO implements StoryDAOInterface {
       TableName: this.tableName,
       Item: {
         [this.aliasAttribute]: alias,
-        [this.timestampAttribute]: timestamp,
+        [this.timestampAttribute]: -1 * timestamp,
         [this.postAttribute]: post,
       },
     };
@@ -65,7 +65,7 @@ export class StoryDAO implements StoryDAOInterface {
       items.push({
         post: item[this.postAttribute],
         user: user,
-        timestamp: item[this.timestampAttribute],
+        timestamp: item[this.timestampAttribute] * -1,
         segments: [],
       })
     );
@@ -92,7 +92,7 @@ export class StoryDAO implements StoryDAOInterface {
       items.push({
         post: item[this.postAttribute],
         user: user,
-        timestamp: item[this.timestampAttribute],
+        timestamp: item[this.timestampAttribute] * -1,
         segments: [],
       })
     );

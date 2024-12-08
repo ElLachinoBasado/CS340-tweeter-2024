@@ -57,6 +57,32 @@ export class FollowsDAO implements FollowsDAOInterface {
     return [items, hasMorePages];
   }
 
+  public async getAllFollowers(
+    client: DynamoDBDocumentClient,
+    user: UserDTO
+  ): Promise<UserDTO[]> {
+    const params: QueryCommandInput = {
+      TableName: this.tableName,
+      IndexName: "followee_handle_index",
+      KeyConditionExpression: `${this.followeeHandleAttribute} = :followee_handle`,
+      ExpressionAttributeValues: {
+        ":followee_handle": user.alias,
+      },
+    };
+
+    const data = await client.send(new QueryCommand(params));
+    const items: UserDTO[] = [];
+    data.Items?.forEach((item) =>
+      items.push({
+        alias: item[this.followerHandleAttribute],
+        firstName: item[this.followerFirstNameAttribute],
+        lastName: item[this.followerLastNameAttribute],
+        imageUrl: item[this.followerImageAttribute],
+      })
+    );
+    return items;
+  }
+
   public async getFollowees(
     client: DynamoDBDocumentClient,
     user: UserDTO,

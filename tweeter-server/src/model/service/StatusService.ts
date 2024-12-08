@@ -1,6 +1,7 @@
 import {
   AuthToken,
   FakeData,
+  Follow,
   Status,
   StatusDTO,
   UserDTO,
@@ -8,15 +9,21 @@ import {
 import { StoryFactory } from "../factory/StoryFactory";
 import { TokensFactory } from "../factory/TokensFactory";
 import { FeedFactory } from "../factory/FeedFactory";
+import { UsersFactory } from "../factory/UsersFactory";
+import { FollowFactory } from "../factory/FollowFactory";
 
 export class StatusService {
   storyFactory: StoryFactory;
   tokensFactory: TokensFactory;
   feedFactory: FeedFactory;
+  userFactory: UsersFactory;
+  followsFactory: FollowFactory;
   constructor() {
     this.storyFactory = new StoryFactory();
     this.tokensFactory = new TokensFactory();
     this.feedFactory = new FeedFactory();
+    this.userFactory = new UsersFactory();
+    this.followsFactory = new FollowFactory();
   }
   public async loadMoreFeedItems(
     token: string,
@@ -34,7 +41,20 @@ export class StatusService {
           pageSize,
           lastItem
         );
-        return [items, hasMore];
+        const completedStatuses: StatusDTO[] = [];
+        for (const feed of items) {
+          const user = await this.userFactory.getUser(feed.user.alias);
+          if (user) {
+            const status: StatusDTO = {
+              user: user,
+              post: feed.post,
+              timestamp: feed.timestamp,
+              segments: feed.segments,
+            };
+            completedStatuses.push(status);
+          }
+        }
+        return [completedStatuses, hasMore];
       }
     } catch (error) {
       return Promise.reject(error);
@@ -80,6 +100,10 @@ export class StatusService {
           newStatus.timestamp,
           newStatus.user.alias
         );
+        const followers = await this.followsFactory.getAllFollowers(
+          newStatus.user
+        );
+        await this.feedFactory.addStoryToFollowers(followers, newStatus);
       }
     } catch (error) {
       return Promise.reject(error);

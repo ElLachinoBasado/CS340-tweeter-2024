@@ -32,7 +32,7 @@ export class FeedDAO implements FeedDAOInterface {
       Limit: pageSize,
     };
     if (lastItem) {
-      const sortKey = lastItem.timestamp + "_" + lastItem.user.alias;
+      const sortKey = -1 * lastItem.timestamp + "_" + lastItem.user.alias;
       params.ExclusiveStartKey = {
         [this.followerAliasAttribute]: user.alias,
         [this.sortKeyAttribute]: sortKey,
@@ -42,14 +42,21 @@ export class FeedDAO implements FeedDAOInterface {
     const data = await client.send(new QueryCommand(params));
     const hasMorePages = data.LastEvaluatedKey !== undefined;
     const items: StatusDTO[] = [];
-    data.Items?.forEach((item) =>
+    console.log("data", data);
+    data.Items?.forEach((item) => {
+      const [negativeTimestamp, alias] = item[this.sortKeyAttribute].split("_");
       items.push({
         post: item[this.postAttribute],
-        timestamp: item[this.timestampAttribute],
-        user: item[this.followeeAliasAttribute],
+        timestamp: -1 * parseInt(negativeTimestamp),
+        user: {
+          alias: item[this.followeeAliasAttribute],
+          firstName: "",
+          lastName: "",
+          imageUrl: "",
+        },
         segments: [],
-      })
-    );
+      });
+    });
 
     return [items, hasMorePages];
   }
@@ -64,7 +71,8 @@ export class FeedDAO implements FeedDAOInterface {
         TableName: this.tableName,
         Item: {
           [this.followerAliasAttribute]: followingUser.alias,
-          [this.sortKeyAttribute]: story.timestamp + "_" + story.user.alias,
+          [this.sortKeyAttribute]:
+            -1 * story.timestamp + "_" + story.user.alias,
           [this.followeeAliasAttribute]: story.user.alias,
           [this.timestampAttribute]: story.timestamp,
           [this.postAttribute]: story.post,
