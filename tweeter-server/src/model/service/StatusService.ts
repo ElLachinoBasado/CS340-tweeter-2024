@@ -7,13 +7,16 @@ import {
 } from "tweeter-shared";
 import { StoryFactory } from "../factory/StoryFactory";
 import { TokensFactory } from "../factory/TokensFactory";
+import { FeedFactory } from "../factory/FeedFactory";
 
 export class StatusService {
   storyFactory: StoryFactory;
   tokensFactory: TokensFactory;
+  feedFactory: FeedFactory;
   constructor() {
     this.storyFactory = new StoryFactory();
     this.tokensFactory = new TokensFactory();
+    this.feedFactory = new FeedFactory();
   }
   public async loadMoreFeedItems(
     token: string,
@@ -21,8 +24,21 @@ export class StatusService {
     pageSize: number,
     lastItem: StatusDTO | null
   ): Promise<[StatusDTO[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeStatusesData(lastItem, pageSize);
+    try {
+      const isExpired = await this.tokensFactory.checkToken(token, user.alias);
+      if (isExpired) {
+        throw new Error("Logout and login again");
+      } else {
+        const [items, hasMore] = await this.feedFactory.getFeed(
+          user,
+          pageSize,
+          lastItem
+        );
+        return [items, hasMore];
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   public async loadMoreStoryItems(
@@ -47,18 +63,6 @@ export class StatusService {
     } catch (error) {
       return Promise.reject(error);
     }
-  }
-
-  private async getFakeStatusesData(
-    lastItem: StatusDTO | null,
-    pageSize: number
-  ): Promise<[StatusDTO[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfStatuses(
-      Status.fromDto(lastItem),
-      pageSize
-    );
-    const dtos = items.map((status) => status.dto);
-    return [dtos, hasMore];
   }
 
   public async postStatus(token: string, newStatus: StatusDTO): Promise<void> {

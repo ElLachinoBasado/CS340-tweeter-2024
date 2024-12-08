@@ -1,13 +1,20 @@
-import { AuthToken, FakeData, User, UserDTO } from "tweeter-shared";
+import { AuthToken, FakeData, StatusDTO, User, UserDTO } from "tweeter-shared";
 import { TokensFactory } from "../factory/TokensFactory";
 import { FollowFactory } from "../factory/FollowFactory";
+import { StoryFactory } from "../factory/StoryFactory";
+import { FeedFactory } from "../factory/FeedFactory";
 
 export class FollowService {
   followFactory: FollowFactory;
   tokensFactory: TokensFactory;
+  storyFactory: StoryFactory;
+  feedFactory: FeedFactory;
+
   constructor() {
     this.followFactory = new FollowFactory();
     this.tokensFactory = new TokensFactory();
+    this.storyFactory = new StoryFactory();
+    this.feedFactory = new FeedFactory();
   }
 
   public async loadMoreFollowers(
@@ -125,8 +132,22 @@ export class FollowService {
         await this.followFactory.follow(user, userToFollow);
         const followerCount = await this.getFollowerCount(token, userToFollow);
         const followeeCount = await this.getFolloweeCount(token, userToFollow);
-
+        await this.addStatusesToFeed(userToFollow, user);
         return [followerCount, followeeCount];
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  private async addStatusesToFeed(
+    followedUser: UserDTO,
+    followingUser: UserDTO
+  ): Promise<void> {
+    try {
+      const stories = await this.storyFactory.getAllStories(followedUser);
+      if (stories.length > 0) {
+        await this.feedFactory.addStoriesToFeed(followingUser, stories);
       }
     } catch (error) {
       return Promise.reject(error);
@@ -153,9 +174,23 @@ export class FollowService {
           token,
           userToUnfollow
         );
-
+        await this.removeStatusesFromFeed(userToUnfollow, user);
         return [followerCount, followeeCount];
       }
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  private async removeStatusesFromFeed(
+    unfollowedUser: UserDTO,
+    followingUser: UserDTO
+  ): Promise<void> {
+    try {
+      await this.feedFactory.removeStoriesFromFeed(
+        followingUser.alias,
+        unfollowedUser.alias
+      );
     } catch (error) {
       return Promise.reject(error);
     }

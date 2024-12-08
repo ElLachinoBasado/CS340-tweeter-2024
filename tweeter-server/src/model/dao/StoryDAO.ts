@@ -72,4 +72,31 @@ export class StoryDAO implements StoryDAOInterface {
 
     return [items, hasMorePages];
   }
+
+  public async getAllStories(
+    client: DynamoDBDocumentClient,
+    user: UserDTO
+  ): Promise<StatusDTO[]> {
+    const params: QueryCommandInput = {
+      TableName: this.tableName,
+      IndexName: "alias-timestamp-index",
+      KeyConditionExpression: `${this.aliasAttribute} = :alias`,
+      ExpressionAttributeValues: {
+        ":alias": user.alias,
+      },
+    };
+
+    const data = await client.send(new QueryCommand(params));
+    const items: StatusDTO[] = [];
+    data.Items?.forEach((item) =>
+      items.push({
+        post: item[this.postAttribute],
+        user: user,
+        timestamp: item[this.timestampAttribute],
+        segments: [],
+      })
+    );
+
+    return items;
+  }
 }

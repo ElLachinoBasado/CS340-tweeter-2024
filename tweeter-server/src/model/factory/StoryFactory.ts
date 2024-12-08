@@ -40,4 +40,13 @@ export class StoryFactory extends Factory<StoryDAO> {
       return Promise.reject(error);
     }
   }
+
+  public async getAllStories(user: UserDTO): Promise<StatusDTO[]> {
+    try {
+      const items = await this.DAO.getAllStories(this.client, user);
+      return items;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }

@@ -15,4 +15,6 @@ export interface StoryDAOInterface extends DAOInterface {
     pageSize: number,
     lastItem: StatusDTO | null
   ): Promise<[StatusDTO[], boolean]>;
+
+  getAllStories(client: any, user: UserDTO): Promise<StatusDTO[]>;
 }
